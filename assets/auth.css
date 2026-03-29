@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+:root {
+  --bg: #f6f8fb;
+  --card: #ffffff;
+  --muted: #667085;
+  --accent: #3A6FF8;
+  --accent-2: #6A2FF8;
+  --glass: rgba(255, 255, 255, 0.65);
+  --radius: 16px;
+  --shadow: 0 10px 25px rgba(18, 38, 63, 0.08);
+  --glass-shadow: 0 12px 35px rgba(34, 41, 61, 0.08);
+  --transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(180deg, #1e66d3, #634ddb) repeat-y;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 420px;
+}
+
+.auth-card {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 35px;
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+h2 {
+    color: black;
+    font-size: 28px;
+}
+
+.subtitle {
+    color: black;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+.input-group {
+    text-align: left;
+    margin-bottom: 18px;
+}
+
+.input-group label {
+    color: black;
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.3);
+    color: black;
+    font-size: 15px;
+}
+
+.input-group input::placeholder {
+    color: black;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 12px;
+    color: black;
+    background: transparent;
+    cursor: pointer;
+    transition: 0.3s;
+    border: 2px solid var(--accent-2);
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    background:linear-gradient(90deg, var(--accent), var(--accent-2));
+    color: white;
+    border: none;
+}
+
+.switch-text {
+    margin-top: 20px;
+    color: black;
+    font-size: 14px;
+}
+
+.switch-text a {
+    color: black;
+    font-weight: 600;
+    text-decoration: underline;
+}
