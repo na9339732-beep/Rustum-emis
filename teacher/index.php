@@ -415,23 +415,13 @@ document.querySelectorAll('.cancel-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
         if (!confirm('Are you sure you want to cancel this PTM?')) return;
 
-            const remarks = prompt("Enter cancellation remarks:");
-
-            if (!remarks) {
-                alert("Remarks are required to cancel PTM");
-                return;
-            }
-
         const id = btn.dataset.id;
 
         try {
             const res = await fetch('ptm_cancel.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                     ptm_id: id,
-                     remarks: remarks
-                    })
+                body: JSON.stringify({ ptm_id: id })
             });
 
             const data = await res.json();

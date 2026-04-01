@@ -36,11 +36,14 @@ $deptQuery = $conn->query("SELECT id, department_name FROM departments ORDER BY 
 <head>
     <title>Edit Teacher</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/sidebar.css">
+    <link rel="stylesheet" href="../assets/styles.css">
 </head>
-<body class="bg-light">
-
-<div class="container mt-5">
-    <div class="card p-4 shadow-sm">
+<body>
+<div class="container">
+    <?php include '../partials/sidebar.php'; ?>
+    <main class="main">
         <h3>Edit Teacher</h3>
         <hr>
 
@@ -114,8 +117,8 @@ $deptQuery = $conn->query("SELECT id, department_name FROM departments ORDER BY 
             <a href="index.php" class="btn btn-secondary">Cancel</a>
 
         </form>
+                    </main>
     </div>
-</div>
 
 </body>
 </html>

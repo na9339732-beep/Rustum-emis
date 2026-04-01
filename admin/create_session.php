@@ -30,13 +30,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>Create Session</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/sidebar.css">
+    <link rel="stylesheet" href="../assets/styles.css">
 </head>
-<body class="bg-light">
-
-<div class="container mt-5">
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white">
+<div class="container">
+    <?php include '../partials/sidebar.php'; ?>
+    <main class="main">
+        <div class="card-header -white mt-5">
             <h4>Create New Session</h4>
         </div>
         <div class="card-body">
@@ -59,11 +61,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <textarea name="remarks" class="form-control" rows="2"></textarea>
                 </div>
 
-                <button class="btn btn-success">Create Session</button>
+                <button class="btn">Create Session</button>
             </form>
 
         </div>
-    </div>
+</main>
 </div>
 
 </body>

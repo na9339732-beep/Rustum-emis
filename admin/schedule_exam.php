@@ -31,11 +31,11 @@ $error = $_GET['error'] ?? '';
 
 <body>
 <div class="container">
-    <main class="col-auto col-md-8 main mx-auto">
-
-      <div class="header mb-4">
-        <h2 class="fw-bold">Schedule Exam</h2>
-      </div>
+    <?php include '../partials/sidebar.php'; ?>
+    <main class="main">
+        <div class="card-header -white mt-5">
+            <h4>Schedule Exam</h4>
+        </div>
         <?php if($success): ?>
             <div class="alert alert-success"><?= htmlspecialchars($success); ?></div>
         <?php endif; ?>

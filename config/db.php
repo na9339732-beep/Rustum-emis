@@ -2,7 +2,6 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-//$dbname = "emis";
 $dbname = "testemis";
 
 // Create connection

@@ -37,7 +37,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.5;
-
+}
 /* ==== Layout ==== */
 .container {
   max-width: 1400px;
@@ -137,7 +137,7 @@ body {
   color:black;
   padding: 24px; /* More internal space inside each cell */
   text-align: center;
-s  overflow-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Header styling */

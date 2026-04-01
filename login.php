@@ -106,7 +106,7 @@ if (isset($_POST['resend_email'])) {
 <body>
 
 <div class="auth-container">
-    <div class="auth-card">
+    <div class="auth-card text-right">
         <div class="header">
             <h1>Welcome Back</h1>
             <p>Please login to your account</p>

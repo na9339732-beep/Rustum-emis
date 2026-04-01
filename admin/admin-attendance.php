@@ -48,7 +48,7 @@ $result = mysqli_query($conn, $sql);
   <div class="row">
 
     <!-- Sidebar Desktop -->
-    <div class="col-lg-auto d-none d-lg-block position-sticky top-0" style="height:100vh;overflow-y:auto;">
+    <div class="col-lg-auto d-none d-lg-block position-sticky top-0" style="height:100vh;overflow-y:hidden;">
       <?php include '../partials/sidebar.php'; ?>
     </div>
 

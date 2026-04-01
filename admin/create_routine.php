@@ -92,9 +92,12 @@ function validateForm() {
 }
 </script>
 </head>
-<body>
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Create Class Routine</h2>
+<div class="container">
+    <?php include '../partials/sidebar.php'; ?>
+    <main class="main">
+        <div class="card-header -white mt-5">
+            <h4>Create Routine</h4>
+        </div>
     <form action="routine_process.php" method="POST" onsubmit="return validateForm();">
         <?php if($success == 1): ?>
             <div class="alert alert-success">Routine created successfully!</div>
@@ -154,10 +157,13 @@ function validateForm() {
         <input type="time" name="end_time" id="end_time" class="form-control mb-4" required>
 
         <button type="submit" class="btn btn-primary w-100">Create Routine</button>
-        <div class="text-center mt-3 btn ghost">
+        <div class="text-center mt-3 btn">
             <a href="index.php">Back to Dashboard</a>
         </div>
     </form>
+</main>
 </div>
+
+</body>
 </body>
 </html>

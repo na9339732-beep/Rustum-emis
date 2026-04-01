@@ -68,7 +68,7 @@ if (!empty($children)) {
     $placeholders = implode(',', array_fill(0, count($child_ids), '?'));
     $types = str_repeat('i', count($child_ids) + 1);
     $stmt = $conn->prepare("
-        SELECT pb.meeting_date, pb.status, t.teacher_name, s.student_name, pb.remarks
+        SELECT pb.meeting_date, pb.status, t.teacher_name, s.student_name
         FROM ptm_bookings pb
         JOIN teachers t ON pb.teacher_id = t.teacher_id
         JOIN students s ON pb.child_id = s.student_id
@@ -134,15 +134,13 @@ if (!empty($children)) {
         </div>
       </div>
       <?php endforeach; ?>
-       <div class="card">
+
+      <div class="card">
         <div style="font-weight:700">Next PTM</div>
         <?php if ($next_ptm): ?>
           <div style="margin-top:8px;color:green;font-weight:500">
             <?= htmlspecialchars($next_ptm['student_name']) ?> with <?= htmlspecialchars($next_ptm['teacher_name']) ?><br>
-            on <?= date('d M Y', strtotime($next_ptm['meeting_date'])) ?> — <?= htmlspecialchars($next_ptm['status']) ?><br>
-            <?php if ($next_ptm['status'] === 'Cancelled'): ?>
-              <span style="color:red;font-size:12px;"><?php echo htmlspecialchars($next_ptm['remarks'] ?? 'Unspecified'); ?></span>
-            <?php endif; ?>
+            on <?= date('d M Y', strtotime($next_ptm['meeting_date'])) ?> — <?= htmlspecialchars($next_ptm['status']) ?>
           </div>
         <?php else: ?>
           <a href="ptm-scheduler.php" style="text-decoration:none;color:inherit">

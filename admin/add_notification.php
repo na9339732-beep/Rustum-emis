@@ -1,11 +1,8 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-session_start();
 include '../config/db.php';
 
 // Check if admin is logged in
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin') {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
     header("Location: ../login.php");
     exit;
 }
@@ -44,15 +41,8 @@ if (isset($_POST['submit'])) {
             width: 100%;
             margin-top: 10px;
             padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
         }
-        button {
-            background: #2563eb;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
+        button { background: #2563eb; color: white; border: none; }
     </style>
 </head>
 <body>

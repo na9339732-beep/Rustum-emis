@@ -18,10 +18,11 @@
     font-family: 'Poppins', sans-serif;
 }
 
+
 body {
-    background: linear-gradient(180deg, #1e66d3, #634ddb) repeat-y;
-    height: 100vh;
+    background: linear-gradient(90deg, #1e66d3, #634ddb) repeat-y;
     display: flex;
+    height: 100vh;
     justify-content: center;
     align-items: center;
 }
@@ -61,10 +62,11 @@ h2 {
     color: black;
     font-size: 14px;
     margin-bottom: 5px;
-    display: block;
+    display: inline;
 }
 
-.input-group input {
+.input-group input,
+.mb-3 select {
     width: 100%;
     padding: 12px;
     border-radius: 10px;
@@ -74,7 +76,6 @@ h2 {
     color: black;
     font-size: 15px;
 }
-
 .input-group input::placeholder {
     color: black;
 }

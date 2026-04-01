@@ -11,7 +11,6 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Teacher') {
 
 $data = json_decode(file_get_contents("php://input"), true);
 $ptm_id = (int)($data['ptm_id'] ?? 0);
-$remarks = $data['remarks'] ?? 'Unspecified';
 $teacher_id = $_SESSION['teacher_id'];
 
 if ($ptm_id <= 0) {
@@ -21,10 +20,10 @@ if ($ptm_id <= 0) {
 
 $stmt = $conn->prepare("
     UPDATE ptm_bookings
-    SET status = 'Cancelled', remarks = ?
+    SET status = 'Cancelled'
     WHERE booking_id = ? AND teacher_id = ?
 ");
-$stmt->bind_param("sii", $remarks, $ptm_id, $teacher_id);
+$stmt->bind_param("ii", $ptm_id, $teacher_id);
 $ok = $stmt->execute();
 $stmt->close();
 

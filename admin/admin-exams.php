@@ -31,31 +31,6 @@ $exams = mysqli_query($conn, $sql);
 
   <link rel="stylesheet" href="../assets/styles.css">
   <link rel="stylesheet" href="../assets/sidebar.css">
-
-  <style>
-    /* Sidebar fixed for desktop */
-    .sidebar-fixed {
-      height: 100vh;
-      overflow-y: auto;
-      position: sticky;
-      top: 0;
-    }
-    /* Table wrapper for scroll on small screens */
-    .table-responsive-custom {
-      overflow-x: auto;
-    }
-    /* Header search box */
-    .header-search {
-      max-width: 300px;
-    }
-    /* Responsive flex for header */
-    @media (max-width: 991px) {
-      .header-flex {
-        flex-direction: column;
-        gap: 1rem;
-      }
-    }
-  </style>
 </head>
 
 <body class="bg-light">

@@ -79,8 +79,10 @@ $groups = $conn->query("SELECT group_id, group_name FROM student_groups ORDER BY
 <head>
 <meta charset="UTF-8">
 <title>Edit Student — Admin</title>
-<link rel="stylesheet" href="../assets/styles.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 <link rel="stylesheet" href="../assets/sidebar.css">
+<link rel="stylesheet" href="../assets/styles.css">
 </head>
 <body>
 <div class="container">
@@ -90,23 +92,23 @@ $groups = $conn->query("SELECT group_id, group_name FROM student_groups ORDER BY
         <form method="POST">
             <div>
                 <label>Student Name</label>
-                <input type="text" name="student_name" value="<?= htmlspecialchars($student['student_name']) ?>" required>
+                <input type="text" class="form-control" name="student_name" value="<?= htmlspecialchars($student['student_name']) ?>" required>
             </div>
             <div>
                 <label>Father Name</label>
-                <input type="text" name="father_name" value="<?= htmlspecialchars($student['father_name']) ?>">
+                <input type="text" class="form-control"  name="father_name" value="<?= htmlspecialchars($student['father_name']) ?>">
             </div>
             <div>
                 <label>Email</label>
-                <input type="email" name="email" value="<?= htmlspecialchars($student['email']) ?>">
+                <input type="email" class="form-control" name="email" value="<?= htmlspecialchars($student['email']) ?>">
             </div>
             <div>
                 <label>Phone</label>
-                <input type="text" name="phone" value="<?= htmlspecialchars($student['phone']) ?>">
+                <input type="text" class="form-control" name="phone" value="<?= htmlspecialchars($student['phone']) ?>">
             </div>
             <div>
                 <label>Class</label>
-                <select name="class_id" required>
+                <select class="form-control" name="class_id" required>
                     <?php foreach ($classes as $class): ?>
                         <option value="<?= $class['class_id'] ?>" <?= $class['class_id'] == $student['class_id'] ? 'selected' : '' ?>>
                             <?= htmlspecialchars($class['class_name']) ?>
@@ -116,7 +118,7 @@ $groups = $conn->query("SELECT group_id, group_name FROM student_groups ORDER BY
             </div>
             <div>
                 <label>Group</label>
-                <select name="group_id">
+                <select class="form-control" name="group_id">
                     <option value="">-- Select Group --</option>
                     <?php foreach ($groups as $g): ?>
                         <option value="<?= $g['group_id'] ?>" <?= $g['group_id'] == $student['group_id'] ? 'selected' : '' ?>>
@@ -127,7 +129,7 @@ $groups = $conn->query("SELECT group_id, group_name FROM student_groups ORDER BY
             </div>
             <div>
                 <label>Status</label>
-                <select name="status">
+                <select class="form-control"  name="status">
                     <option value="registered" <?= $student['status']=='registered'?'selected':'' ?>>Registered</option>
                     <option value="admitted" <?= $student['status']=='admitted'?'selected':'' ?>>Admitted</option>
                     <option value="banned" <?= $student['status']=='banned'?'selected':'' ?>>Banned</option>
@@ -136,11 +138,11 @@ $groups = $conn->query("SELECT group_id, group_name FROM student_groups ORDER BY
             </div>
             <div>
                 <label>City</label>
-                <input type="text" name="city" value="<?= htmlspecialchars($student['city']) ?>">
+                <input type="text" class="form-control" name="city" value="<?= htmlspecialchars($student['city']) ?>">
             </div>
             <div>
                 <label>State</label>
-                <input type="text" name="state" value="<?= htmlspecialchars($student['state']) ?>">
+                <input type="text" class="form-control" name="state" value="<?= htmlspecialchars($student['state']) ?>">
             </div>
             <div style="margin-top:10px;">
                 <button type="submit" class="btn">Update Student</button>

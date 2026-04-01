@@ -172,11 +172,11 @@ $sessions = $conn->query("
                                     </button>
                                 <?php endif; ?>
 
-                              <!---<a href="?delete=<?= $row['session_id'] ?>&csrf=<?= $csrf ?>"
+                                <a href="?delete=<?= $row['session_id'] ?>&csrf=<?= $csrf ?>"
                                    class="btn btn-sm btn-danger"
                                    onclick="return confirm('Delete this Batch?')">
                                     Delete
-                                </a>-->
+                                </a>
                             </td>
                         </tr>
                     <?php endwhile; ?>
