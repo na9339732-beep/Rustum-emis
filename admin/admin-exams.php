@@ -33,12 +33,12 @@ $exams = mysqli_query($conn, $sql);
   <link rel="stylesheet" href="../assets/sidebar.css">
 </head>
 
-<body class="bg-light">
+<body>
 
-<div class="d-flex vh-100">
-<?php include '../partials/sidebar.php'; ?>
+<div class="container">
+    <?php include '../partials/sidebar.php'; ?>
 
-<main class="flex-grow-1 p-4">
+    <main class="main">
 
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center header-flex mb-4">
@@ -100,11 +100,6 @@ $exams = mysqli_query($conn, $sql);
     </div>
 
   </main>
-</div>
-
-<!-- MOBILE SIDEBAR -->
-<div class="d-block d-lg-none">
-  <?php include '../partials/sidebar.php'; ?>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

@@ -2,13 +2,15 @@
 .sidebar {
   backdrop-filter: blur(12px);
   border-radius: var(--radius);
-  padding: 24px;
+  padding: 20px;
   min-width: fit-content;
   box-shadow: var(--glass-shadow);
   position: sticky;
-  top: 20px;
-  border: 1px solid rgba(255,255,255,0.4);
+  top: 10px;
+  border: 1px solid rgb(102 52 248);
   transition: var(--transition);
+  font-size: 0.9rem;
+  width: 40%;
 }
 
 .brand { text-align: center; margin-bottom: 32px; }

@@ -37,13 +37,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <title>Create Class</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+     <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="../assets/sidebar.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+   
 </head>
-<body class="bg-light">
+<div class="container">
+    <?php include '../partials/sidebar.php'; ?>
 
-<div class="container mt-5">
-
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white">
+    <main class="main">
+        <div class="card-header  text-dark">
             <h4>Create New Class</h4>
         </div>
 
@@ -80,8 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
 
         </div>
-    </div>
-
+</main>
 </div>
 
 </body>

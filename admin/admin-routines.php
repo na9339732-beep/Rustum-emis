@@ -50,72 +50,9 @@ while ($row = mysqli_fetch_assoc($result)) {
     <title>Class Routine — EMIS Portal</title>
     <link rel="stylesheet" href="../assets/styles.css">
     <link rel="stylesheet" href="../assets/sidebar.css">
+    <link rel="stylesheet" href="../assets/admin-routine.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <style>
-        .main {
-            padding: 20px;
-        }
-        .card {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-top: 20px;
-        }
-        h2 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-        .header-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        table {
-            width: 100%;
-            min-width: 800px;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        th, td {
-            padding: 12px;
-            border: 1px solid #ddd;
-            text-align: center;
-            vertical-align: middle;
-        }
-        th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-        }
-        .time-col {
-            background-color: #f1f3f5;
-            font-weight: bold;
-            min-width: 120px;
-            position: sticky;
-            left: 0;
-            z-index: 1;
-        }
-        .empty {
-            color: #6c757d;
-            font-style: italic;
-        }
-        .btn {
-            padding: 8px 16px;
-            background: #0d6efd;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        .btn:hover {
-            background: #0b5ed7;
-        }
-    </style>
 </head>
 <body>
 

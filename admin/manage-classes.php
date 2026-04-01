@@ -93,19 +93,21 @@ $sessions = $conn->query("SELECT session_id, session_name FROM sessions WHERE st
     <head>
     <meta charset="utf-8">
         <title>Manage Classes</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="../assets/styles.css">
-        <link rel="stylesheet" href="../assets/sidebar.css">
-    </head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="../assets/sidebar.css">
+    <link rel="stylesheet" href="../assets/admin-teacher.css">
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<body>
 
-    <body class="bg-light">
+<div class="container">
+    <?php include '../partials/sidebar.php'; ?>
 
-        <div class="d-flex">
-        <?php include '../partials/sidebar.php'; ?>
 
-            <main class="flex-grow-1 p-4">
+    <!-- MAIN CONTENT -->
+    <main class="main">
 
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h3>Manage Classes</h3>
@@ -120,8 +122,8 @@ $sessions = $conn->query("SELECT session_id, session_name FROM sessions WHERE st
                     <div class="card-body table-responsive">
 
                         <table class="table table-bordered align-middle">
-                            <thead class="table-dark">
-                                <tr>
+                            <thead class="table-dark text-dark">
+                                <tr class=""text-dark>
                                     <th>#</th>
                                     <th>Class Name</th>
                                     <th>Short</th>

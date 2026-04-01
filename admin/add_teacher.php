@@ -139,12 +139,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Add Teacher — EMIS</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-<link rel="stylesheet" href="../assets/sidebar.css">
 <link rel="stylesheet" href="../assets/styles.css">
-
+<link rel="stylesheet" href="../assets/sidebar.css">
+<link rel="stylesheet" href="../assets/admin-teacher.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 <style>
 .photo-preview{
     max-width:150px;
@@ -155,19 +154,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 </style>
 </head>
+<body>
 
-<body class="bg-light">
+<div class="container">
+    <?php include '../partials/sidebar.php'; ?>
 
-<div class="container-fluid">
-  <div class="row flex-nowrap">
-
-    <!-- SIDEBAR -->
-    <aside class="col-auto col-md-3 col-xl-2 px-0 bg-white border-end min-vh-100">
-      <?php include '../partials/sidebar.php'; ?>
-    </aside>
 
     <!-- MAIN CONTENT -->
-    <main class="col py-4 px-4 px-lg-5">
+    <main class="main">
 
       <h3 class="fw-bold mb-4">Add New Teacher</h3>
 

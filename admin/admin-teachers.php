@@ -28,84 +28,8 @@ $result = mysqli_query($conn, $sql);
     <title>Manage Teachers — EMIS Portal</title>
     <link rel="stylesheet" href="../assets/styles.css">
     <link rel="stylesheet" href="../assets/sidebar.css">
+    <link rel="stylesheet" href="../assets/admin-teacher.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <style>
-        .main {
-            padding: 20px;
-        }
-        .card {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-top: 20px;
-        }
-        h2 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-        .header-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        table {
-            width: 100%;
-            min-width: 700px;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        th, td {
-            padding: 12px;
-            border: 1px solid #ddd;
-            text-align: left;
-            vertical-align: middle;
-        }
-        th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-        }
-        .badge {
-            background-color: #0d6efd;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.85em;
-        }
-        .btn {
-            padding: 8px 16px;
-            background: #0d6efd;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 14px;
-            margin-right: 6px;
-        }
-        .btn:hover {
-            background: #0b5ed7;
-        }
-        .btn-danger {
-            background: #dc3545;
-        }
-        .btn-danger:hover {
-            background: #c82333;
-        }
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 13px;
-        }
-        .empty {
-            color: #6c757d;
-            font-style: italic;
-            text-align: center;
-            padding: 30px !important;
-        }
-    </style>
 </head>
 <body>
 

@@ -58,49 +58,56 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
   <meta charset="utf-8">
   <title>Edit Exam</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+     <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="../assets/sidebar.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="container mt-5">
+<body>
 
-  <h3 class="mb-3">Edit Exam</h3>
+<div class="container">
+    <?php include '../partials/sidebar.php'; ?>
 
-  <?php if (!empty($error)): ?>
-    <div class="alert alert-danger"><?= $error ?></div>
-  <?php endif; ?>
+    <main class="main">
+    <h3 class="mb-3">Edit Exam</h3>
 
-  <form method="POST">
-    <div class="mb-3">
-      <label class="form-label">Exam Title</label>
-      <input type="text" name="exam_title" class="form-control" required value="<?= htmlspecialchars($exam['exam_title']) ?>">
-    </div>
+    <?php if (!empty($error)): ?>
+      <div class="alert alert-danger"><?= $error ?></div>
+    <?php endif; ?>
 
-    <div class="mb-3">
-      <label class="form-label">Class</label>
-      <select name="class_id" class="form-select" required>
-        <?php while ($class = mysqli_fetch_assoc($classes)): ?>
-          <option value="<?= $class['class_id'] ?>" 
-            <?= $exam['class_id'] == $class['class_id'] ? 'selected' : '' ?>>
-              <?= htmlspecialchars($class['class_name']) ?>
-          </option>
-        <?php endwhile; ?>
-      </select>
-    </div>
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label">Exam Title</label>
+        <input type="text" name="exam_title" class="form-control" required value="<?= htmlspecialchars($exam['exam_title']) ?>">
+      </div>
 
-    <div class="mb-3">
-      <label class="form-label">Start Date</label>
-      <input type="date" name="start_date" class="form-control" required value="<?= $exam['start_date'] ?>">
-    </div>
+      <div class="mb-3">
+        <label class="form-label">Class</label>
+        <select name="class_id" class="form-select" required>
+          <?php while ($class = mysqli_fetch_assoc($classes)): ?>
+            <option value="<?= $class['class_id'] ?>" 
+              <?= $exam['class_id'] == $class['class_id'] ? 'selected' : '' ?>>
+                <?= htmlspecialchars($class['class_name']) ?>
+            </option>
+          <?php endwhile; ?>
+        </select>
+      </div>
 
-    <div class="mb-3">
-      <label class="form-label">End Date</label>
-      <input type="date" name="end_date" class="form-control" required value="<?= $exam['end_date'] ?>">
-    </div>
+      <div class="mb-3">
+        <label class="form-label">Start Date</label>
+        <input type="date" name="start_date" class="form-control" required value="<?= $exam['start_date'] ?>">
+      </div>
 
-    <button class="btn btn-success">Save Changes</button>
-    <a href="admin-exams.php" class="btn btn-secondary">Cancel</a>
+      <div class="mb-3">
+        <label class="form-label">End Date</label>
+        <input type="date" name="end_date" class="form-control" required value="<?= $exam['end_date'] ?>">
+      </div>
+
+      <button class="btn">Save Changes</button>
+      <a href="admin-exams.php" class="btn">Cancel</a>
   </form>
-
+  </main>
 </div>
 </body>
 </html>

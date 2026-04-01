@@ -34,26 +34,19 @@ $result = mysqli_query($conn, $sql);
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Manage Attendance — EMIS Portal</title>
 
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="../assets/styles.css">
-  <link rel="stylesheet" href="../assets/sidebar.css">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="../assets/sidebar.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../assets/admin-dashboard.css">
 </head>
-
 <body>
-<div class="container-fluid">
-  <div class="row">
 
-    <!-- Sidebar Desktop -->
-    <div class="col-lg-auto d-none d-lg-block position-sticky top-0" style="height:100vh;overflow-y:hidden;">
-      <?php include '../partials/sidebar.php'; ?>
-    </div>
+<div class="container">
+    <?php include '../partials/sidebar.php'; ?>
 
-    <!-- Main Content -->
-    <main class="col p-4">
+    <main class="main">
+        <h2>Admin Dashboard</h2>
 
       <!-- Page Header -->
       <div class="d-flex justify-content-between align-items-center mb-4">

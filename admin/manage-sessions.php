@@ -95,22 +95,20 @@ $sessions = $conn->query("
     <meta charset="utf-8">
     <title>Manage Batches</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-
-  <link rel="stylesheet" href="../assets/styles.css">
-  <link rel="stylesheet" href="../assets/sidebar.css">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="../assets/sidebar.css">
+    <link rel="stylesheet" href="../assets/admin-teacher.css">
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
+<body>
 
-<body class="bg-light">
-
-<div class="d-flex">
-
-    <!-- SIDEBAR -->
+<div class="container">
     <?php include '../partials/sidebar.php'; ?>
 
+
     <!-- MAIN CONTENT -->
-    <main class="flex-grow-1 p-4">
+    <main class="main">
 
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="mb-0">Manage Academic Batches</h3>
@@ -155,13 +153,13 @@ $sessions = $conn->query("
 
                             <td>
                                 <a href="?toggle=<?= $row['session_id'] ?>&csrf=<?= $csrf ?>"
-                                   class="btn btn-sm btn-warning">
+                                   class="btn">
                                     <?= $row['status'] === 'active' ? 'Complete' : 'Activate' ?>
                                 </a>
 
                                 <?php if ($row['status'] === 'active'): ?>
                                     <button
-                                        class="btn btn-sm btn-info"
+                                        class="btn "
                                         onclick="openEditModal(
                                             <?= $row['session_id'] ?>,
                                             '<?= htmlspecialchars($row['session_name'], ENT_QUOTES) ?>',
@@ -173,7 +171,7 @@ $sessions = $conn->query("
                                 <?php endif; ?>
 
                                 <a href="?delete=<?= $row['session_id'] ?>&csrf=<?= $csrf ?>"
-                                   class="btn btn-sm btn-danger"
+                                   class="btn  btn-danger"
                                    onclick="return confirm('Delete this Batch?')">
                                     Delete
                                 </a>
