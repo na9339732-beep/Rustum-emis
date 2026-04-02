@@ -168,7 +168,7 @@ if (!$no_children) {
 
             <div class="card">
                 <div style="font-weight:700;margin-bottom:12px">Book Meeting with Teacher</div>
-
+                        <small>The official meeting time is 9AM to 11AM</small>
                 <?php if (empty($teachers)): ?>
                     <div class="alert alert-warning">
                         No teachers assigned to <?= htmlspecialchars($child_name) ?>'s class.

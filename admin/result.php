@@ -69,6 +69,10 @@ if (isset($_POST['export_csv'])) {
 <title>View Results</title>
 <link rel="stylesheet" href="../assets/styles.css">
 <link rel="stylesheet" href="../assets/sidebar.css">
+<link rel="stylesheet" href="../assets/admin-routine.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="../assets/admin-dashboard.css">
 <style>
 body { font-family: Arial, sans-serif; margin:0; padding:0; }
 .container { display: flex; gap: 20px; padding: 20px; }

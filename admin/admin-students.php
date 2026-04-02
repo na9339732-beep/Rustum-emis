@@ -44,7 +44,9 @@ while ($row = $res->fetch_assoc()) {
 <title>Manage Students — Admin</title>
 <link rel="stylesheet" href="../assets/styles.css">
 <link rel="stylesheet" href="../assets/sidebar.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="../assets/admin-dashboard.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 table { width:100%; border-collapse: collapse; margin-top: 20px; }
@@ -55,7 +57,7 @@ select { padding:5px; }
 <body>
 <div class="container">
     <?php include '../partials/sidebar.php'; ?>
-    <main class="main">
+    <main class="main mt-4">
         <h2>Manage Students</h2>
         <table>
             <thead>

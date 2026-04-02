@@ -92,30 +92,18 @@ if (isset($_GET['action'], $_GET['id'])) {
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="../assets/styles.css">
 <link rel="stylesheet" href="../assets/sidebar.css">
+<link rel="stylesheet" href="../assets/admin-routine.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-<style>
-body { font-family: Arial, sans-serif; margin:0; padding:0; }
-.container { display: flex; gap: 20px; padding: 20px; }
-.main { flex: 1; }
-h2 { margin-bottom: 10px; }
-button.csv-export { padding: 8px 12px; background:#3498db; color:#fff; border:none; border-radius:4px; cursor:pointer; margin-bottom:15px; }
-table { width: 100%; border-collapse: collapse; margin-top:10px; }
-th, td { border:1px solid #ccc; padding: 8px; text-align:center; }
-th { background:#f4f4f4; }
-.status-Pending { color: #f39c12; font-weight:bold; }
-.status-Confirmed { color: #27ae60; font-weight:bold; }
-.status-Cancelled { color: #e74c3c; font-weight:bold; }
-.action-btn { padding: 5px 10px; border:none; border-radius:4px; color:#fff; cursor:pointer; text-decoration:none; margin:0 2px; }
-.confirm { background:#27ae60; }
-.cancel { background:#e74c3c; }
-</style>
+<link rel="stylesheet" href="../assets/admin-dashboard.css">
+<link rel="stylesheet" href="../assets/view-ptm.css">
 </head>
 <body>
 
 <div class="container">
 
 <!-- Sidebar -->
-<div class="col-lg-3 d-none d-lg-block position-sticky top-0">
+<div>
   <?php include '../partials/sidebar.php'; ?>
 </div>
 
@@ -125,7 +113,7 @@ th { background:#f4f4f4; }
 
 <!-- CSV Export Button -->
 <form method="get">
-    <button type="submit" name="export" value="csv" class="csv-export">Download CSV</button>
+    <button type="submit" name="export" value="csv" class="btn">Download CSV</button>
 </form>
 
 <table>

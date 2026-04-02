@@ -29,7 +29,9 @@ $result = mysqli_query($conn, $sql);
     <link rel="stylesheet" href="../assets/styles.css">
     <link rel="stylesheet" href="../assets/sidebar.css">
     <link rel="stylesheet" href="../assets/admin-teacher.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../assets/admin-dashboard.css">
 </head>
 <body>
 

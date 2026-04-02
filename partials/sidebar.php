@@ -4,7 +4,7 @@ $role = $_SESSION['role'] ?? '';
 $current_page = basename($_SERVER['PHP_SELF']); // to highlight active page
 ?>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <!-- Desktop Sidebar -->
 <div class="sidebar d-none d-lg-block position-sticky top-0 col-lg-3" id="sidebar" style="height:120vh;">
     <div class="brand mb-5 p-4 text-center">

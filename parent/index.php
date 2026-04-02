@@ -97,15 +97,14 @@ if (!empty($children)) {
 </head>
 <body>
 <div class="container">
-  <div class="col-lg-2 d-none d-lg-block bg-white glass shadow-sm position-sticky top-0">
-    <div class="pt-4 px-lg-2 pt-5">
+    <div class="">
       <?php include '../partials/sidebar.php'; ?>
-    </div>
+
   </div>
 
   <main class="main">
     <div class="header">
-      <div style="display:flex;gap:12px;align-items:center">
+      <div style="display:flex;gap:12px;align-items:center;text-align:center;">
         <div style="font-size:20px;font-weight:700">Parent Dashboard</div>
      
       <div style="display:flex;gap:12px;align-items:flex-end">

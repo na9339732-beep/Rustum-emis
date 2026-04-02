@@ -41,7 +41,7 @@ body {
 /* ==== Layout ==== */
 .container {
   min-width: 100%;
-  margin: 0 auto;
+  margin: 0 2px;
   display: grid;
   gap: 20px;
   grid-template-columns: 280px 1fr;

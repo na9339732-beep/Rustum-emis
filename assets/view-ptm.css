@@ -1,0 +1,15 @@
+
+body { font-family: Arial, sans-serif; margin:0; padding:0; }
+.container { display: flex; gap: 20px; padding: 20px; }
+.main { flex: 1; }
+h2 { margin-bottom: 10px; }
+button.csv-export { padding: 8px 12px; background:#3498db; color:#fff; border:none; border-radius:4px; cursor:pointer; margin-bottom:15px; }
+table { width: 100%; border-collapse: collapse; margin-top:10px; }
+th, td { border:1px solid #ccc; padding: 8px; text-align:center; }
+th { background:#f4f4f4; }
+.status-Pending { color: #f39c12; font-weight:bold; }
+.status-Confirmed { color: #27ae60; font-weight:bold; }
+.status-Cancelled { color: #e74c3c; font-weight:bold; }
+.action-btn { padding: 5px 10px; border:none; border-radius:4px; color:#fff; cursor:pointer; text-decoration:none; margin:0 2px; }
+.confirm { background:#27ae60; }
+.cancel { background:#e74c3c; }

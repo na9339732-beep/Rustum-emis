@@ -45,7 +45,7 @@ $result = mysqli_query($conn, $sql);
 <div class="container">
     <?php include '../partials/sidebar.php'; ?>
 
-    <main class="main">
+    <main class="main p-4">
         <h2>Admin Dashboard</h2>
 
       <!-- Page Header -->
@@ -58,7 +58,7 @@ $result = mysqli_query($conn, $sql);
       </div>
 
       <!-- Attendance Card -->
-      <div class="card p-4 shadow-sm col-lg-10">
+      <div class="card p-4 shadow-sm col-lg-20">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h5 class="fw-bold">Attendance Calendar</h5>
           <a class="btn btn-outline-primary" href="export_attendance.php">
@@ -66,7 +66,7 @@ $result = mysqli_query($conn, $sql);
           </a>
         </div>
 
-        <table class="table table-hover align-middle">
+        <table class="table table-hover align-middle table-responsive">
           <thead class="table-light">
             <tr>
               <th>Date</th>
@@ -106,6 +106,6 @@ $result = mysqli_query($conn, $sql);
 <div class="d-block d-md-none">
   <?php include '../partials/sidebar.php'; ?>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
