@@ -1,3 +1,4 @@
+
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -11,64 +12,64 @@ $showResendButton = false; // flag to show resend button
 $userEmailToResend = '';    // store email for resend
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!isset($_POST['resend_email'])) {
+        $email = strtolower(trim($_POST['email']));
+        $password = $_POST['password'];
 
-    $email = strtolower(trim($_POST['email']));
-    $password = $_POST['password'];
+        // Use prepared statement to prevent SQL injection
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email=? LIMIT 1");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-    // Use prepared statement to prevent SQL injection
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email=? LIMIT 1");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+        if ($result->num_rows == 1) {
+            $user = $result->fetch_assoc();
 
-    if ($result->num_rows == 1) {
-        $user = $result->fetch_assoc();
+            // Check if email is verified
+            if ($user['email_verified'] != 1) {
+                $loginError = "Please verify your email before logging in.";
+                $showResendButton = true;
+                $userEmailToResend = $user['email'];
+            } 
+            // Verify password
+            else if (password_verify($password, $user['password'])) {
 
-        // Check if email is verified
-        if ($user['email_verified'] != 1) {
-            $loginError = "Please verify your email before logging in.";
-            $showResendButton = true;
-            $userEmailToResend = $user['email'];
-        } 
-        // Verify password
-        else if (password_verify($password, $user['password'])) {
+                // store user in session
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['cnic'] = $user['cnic'];
 
-            // store user in session
-            $_SESSION['user_id'] = $user['user_id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['role'] = $user['role'];
-            $_SESSION['cnic'] = $user['cnic'];
+                // Redirect based on role
+                switch ($user['role']) {
+                    case 'Admin':
+                        header("Location: admin/index.php");
+                        break;
+                    case 'Teacher':
+                        header("Location: teacher/index.php");
+                        break;
+                    case 'Student':
+                        header("Location: student/index.php");
+                        break;
+                    case 'Parents':
+                        header("Location: parent/index.php");
+                        break;
+                    default:
+                        header("Location: index.php");
+                }
+                exit;
 
-            // Redirect based on role
-            switch ($user['role']) {
-                case 'Admin':
-                    header("Location: admin/index.php");
-                    break;
-                case 'Teacher':
-                    header("Location: teacher/index.php");
-                    break;
-                case 'Student':
-                    header("Location: student/index.php");
-                    break;
-                case 'Parents':
-                    header("Location: parent/index.php");
-                    break;
-                default:
-                    header("Location: index.php");
+            } else {
+                $loginError = "Incorrect password!";
             }
-            exit;
 
         } else {
-            $loginError = "Incorrect password!";
+            $loginError = "User not found!";
         }
 
-    } else {
-        $loginError = "User not found!";
+        $stmt->close();
     }
-
-    $stmt->close();
 }
-
 // Handle Resend Verification Email button click
 if (isset($_POST['resend_email'])) {
     $emailToResend = $_POST['resend_email'];
@@ -146,4 +147,3 @@ if (isset($_POST['resend_email'])) {
 
 </body>
 </html>
-

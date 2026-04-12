@@ -75,7 +75,6 @@ if (isset($_POST['export_csv'])) {
 <link rel="stylesheet" href="../assets/admin-dashboard.css">
 <style>
 body { font-family: Arial, sans-serif; margin:0; padding:0; }
-.container { display: flex; gap: 20px; padding: 20px; }
 .main { flex: 1; }
 h2 { margin-bottom: 20px; }
 table { width: 100%; border-collapse: collapse; }
@@ -89,10 +88,7 @@ button.export-btn:hover { background:#3b50c4; }
 
 <div class="container">
 
-<!-- Sidebar -->
-<div class="col-lg-3 d-none d-lg-block position-sticky top-0">
   <?php include '../partials/sidebar.php'; ?>
-</div>
 
 <!-- Main Content -->
 <main class="main">

@@ -20,7 +20,7 @@
 
 
 body {
-    background: linear-gradient(90deg, #1e66d3, #634ddb) repeat-y;
+    background: #f4f6fb;
     display: flex;
     height: 100vh;
     justify-content: center;
@@ -33,12 +33,12 @@ body {
 }
 
 .auth-card {
-    background: rgba(255, 255, 255, 0.15);
+    background: #fff;
     padding: 35px;
     border-radius: 20px;
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 0px rgba(106, 47, 248);
     text-align: center;
 }
 
@@ -70,7 +70,7 @@ h2 {
     width: 100%;
     padding: 12px;
     border-radius: 10px;
-    border: none;
+    border: 1px solid var(--accent-2);
     outline: none;
     background: rgba(255,255,255,0.3);
     color: black;

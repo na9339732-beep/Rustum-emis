@@ -13,14 +13,15 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin') {
 
 /* ===== ADD GROUP ===== */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $group_name = trim($_POST['group_name'] ?? '');
+    $group_name = trim($_POST['group_name']);
+    $group_short = trim($_POST['group_short']);
 
-    if ($group_name !== '') {
+    if ($group_name !== '' && $group_short !== '') {
         $stmt = $conn->prepare("
-            INSERT INTO student_groups (group_name)
-            VALUES (?)
+            INSERT INTO student_groups (group_name, group_short)
+            VALUES (?, ?)
         ");
-        $stmt->bind_param("s", $group_name);
+        $stmt->bind_param("ss", $group_name, $group_short);
         $stmt->execute();
         $stmt->close();
     }
@@ -72,12 +73,9 @@ $groups = $conn->query("
 <body>
 <div class="container">
 
-<!-- Sidebar -->
-<div class="col-lg-3 d-none d-lg-block position-sticky top-0">
   <?php include '../partials/sidebar.php'; ?>
-</div>
 
-<main class="main col-lg-9">
+<main class="main ">
 
 <h4 class="mb-3">Manage Student Groups</h4>
 
@@ -85,7 +83,8 @@ $groups = $conn->query("
 <div class="card mb-4">
 <h6>Add New Group</h6>
 <form method="post" class="d-flex gap-2">
-<input type="text" name="group_name" class="form-control search" placeholder="e.g. ICS, Pre-Engineering" required>
+<input type="text" name="group_name" class="form-control search" placeholder="Full Name (e.g. ICS, Pre-Engineering)" required>
+<input type="text" name="group_short" class="form-control search"  placeholder="Short Name (e.g. ICS, PE)">
 <button class="btn btn-primary">Add</button>
 </form>
 </div>

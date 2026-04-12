@@ -101,7 +101,7 @@ $recentActivity = $conn->query("
                     <i class="bi bi-person-plus"></i> Add Teacher
                 </a>
                 <a href="create_session.php" class="btn btn-outline">
-                    <i class="bi bi-calendar-plus"></i> Create Session
+                    <i class="bi bi-calendar-plus"></i> Create Batch
                 </a>
                 <a href="create_class.php" class="btn btn-outline">
                     <i class="bi bi-building"></i> Create Class

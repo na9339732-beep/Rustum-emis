@@ -11,19 +11,22 @@ if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin'){
 }
 
 // Fetch exams with class names
-$sql = "SELECT e.exam_id, e.exam_title, e.start_date, e.end_date, c.class_name 
+$sql = "SELECT e.exam_id, e.exam_title, e.start_date, e.end_date, c.class_name, s.session_name
         FROM exams e 
         JOIN classes c ON e.class_id = c.class_id 
+        JOIN sessions s ON c.session_id = s.session_id 
+        WHERE s.status = 'Active'
         ORDER BY e.start_date ASC";
 
 $exams = mysqli_query($conn, $sql);
 ?>
+
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Exam Scheduler — School Portal</title>
+  <title>Exam Scheduler - School Portal</title>
   <!-- Bootstrap -->
   <link rel="stylesheet" href="../assets/styles.css">
   <link rel="stylesheet" href="../assets/sidebar.css">
@@ -67,6 +70,7 @@ $exams = mysqli_query($conn, $sql);
             <tr>
               <th>Exam</th>
               <th>Class</th>
+              <th>Batch</th>
               <th>Start Date</th>
               <th>End Date</th>
               <th class="text-center">Actions</th>
@@ -78,6 +82,7 @@ $exams = mysqli_query($conn, $sql);
                 <tr>
                   <td><?= htmlspecialchars($row['exam_title']); ?></td>
                   <td><?= htmlspecialchars($row['class_name']); ?></td>
+                  <td><?= htmlspecialchars($row['session_name']); ?></td>
                   <td><?= date('d M Y', strtotime($row['start_date'])); ?></td>
                   <td><?= date('d M Y', strtotime($row['end_date'])); ?></td>
                   <td class="text-center">

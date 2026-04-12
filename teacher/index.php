@@ -150,9 +150,10 @@ $stmt->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teacher Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../assets/styles.css">
     <link rel="stylesheet" href="../assets/sidebar.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
         .header {
             display: flex;
@@ -196,8 +197,6 @@ $stmt->close();
             margin-right: 4px;
             min-width:100px;
         }
-        .confirm-btn { background: #4f46e5; color: white; }
-        .confirm-btn:hover { background: #4338ca; }
         .cancel-btn   { background: #ef4444; color: white; }
         .cancel-btn:hover { background: #dc2626; }
         .reschedule-btn { background: #f59e0b; color: black; }
@@ -207,11 +206,11 @@ $stmt->close();
 <body>
 
 <div class="container">
-    <div class="col-lg-3 d-none d-lg-block bg-white glass shadow-sm position-sticky top-0">
+    <div>
         <?php include '../partials/sidebar.php'; ?>
     </div>
 
-    <main class="main col-lg-9">
+    <main class="main">
         <div class="header">
             <h3>Teacher Dashboard</h3>
             <div class="text-end">

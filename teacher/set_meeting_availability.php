@@ -83,7 +83,11 @@ if (isset($_POST['save'])) {
     </style>
 </head>
 <body>
-
+  <div class="container">
+      <div class="">
+        <?php include '../partials/sidebar.php'; ?>
+    </div>
+   <main class="main">
 <h2>Set PTM Availability</h2>
 
 <?php if ($error): ?>
@@ -106,6 +110,9 @@ if (isset($_POST['save'])) {
     <input type="time" name="end_time" required>
 
     <button class="btn" name="save">Save Availability</button>
-</form>
+    
+    </form>
+</main>
+</div>
 </body>
 </html>

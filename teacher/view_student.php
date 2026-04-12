@@ -76,15 +76,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 <div class="container">
-
-    <!-- Sidebar -->
-    <div class="col-lg-2 d-none d-lg-block bg-white glass shadow-sm position-sticky top-0">
-      <div class="pt-4 px-lg-2 pt-5">
+      <div>
         <?php include '../partials/sidebar.php'; ?>
       </div>
-    </div>
-
-    <!-- Main -->
     <main class="main">
 
       <div class="header">

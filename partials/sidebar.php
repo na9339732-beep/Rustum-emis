@@ -45,6 +45,9 @@ $current_page = basename($_SERVER['PHP_SELF']); // to highlight active page
 
         <!-- Teacher Only -->
         <?php if ($role === 'Teacher'): ?>
+             <a href="teacher-routine.php" class="nav-link <?= strpos($current_page, 'admin-routines') !== false ? 'active' : '' ?>">
+                <i class="bi bi-calendar3"></i> Routines & Timings
+            </a>
             <a href="teacher-materials.php" class="nav-link <?= strpos($current_page, 'teacher-materials') !== false ? 'active' : '' ?>">
                 <i class="bi bi-collection"></i> Manage Materials
             </a>

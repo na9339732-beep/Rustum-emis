@@ -11,7 +11,11 @@ if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin'){
 }
 
 // Fetch active classes
-$classes = mysqli_query($conn, "SELECT class_id, class_name FROM classes WHERE class_status='active' ORDER BY class_name ASC");
+$classes = mysqli_query($conn, "SELECT  c.class_name,c.class_id, s.session_name
+        FROM classes c 
+        JOIN sessions s ON c.session_id = s.session_id 
+        WHERE c.class_status = 'active'
+        ORDER BY c.class_name ASC");
 $success = $_GET['success'] ?? '';
 $error = $_GET['error'] ?? '';
 ?>
@@ -59,7 +63,7 @@ $error = $_GET['error'] ?? '';
             <select name="class_id" class="form-select rounded-4" required>
               <option value="" disabled selected>Select Class</option>
               <?php while($c = mysqli_fetch_assoc($classes)): ?>
-                  <option value="<?= $c['class_id']; ?>"><?= $c['class_name']; ?></option>
+                  <option value="<?= $c['class_id']; ?>"><?= $c['class_name']; ?> -- <?= $c['session_name']; ?></option>
               <?php endwhile; ?>
             </select>
           </div>

@@ -132,15 +132,14 @@ $results = $conn->query("
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Manage Results — EMIS Portal</title>
-  <link rel="stylesheet" href="../assets/styles.css">
-  <link rel="stylesheet" href="../assets/sidebar.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="../assets/sidebar.css">
 <style>
-body{font-family:Arial}
 .table{width:100%;border-collapse:collapse}
 .table th,.table td{border:1px solid #ccc;padding:8px}
 .form-control{width:100%;padding:8px;margin-bottom:8px}
-.btn{padding:6px 10px;border:none;border-radius:4px;cursor:pointer}
 .btn-save{background:#4a63e7;color:#fff}
 .btn-del{background:#e74c3c;color:#fff}
 .btn-edit{background:#f39c12;color:#fff}
@@ -149,11 +148,7 @@ body{font-family:Arial}
 
 <body>
   <div class="container">
-    <div class="col-lg-2 d-none d-lg-block bg-white glass shadow-sm position-sticky top-0">
-      <div class="pt-4 px-lg-2 pt-5">
         <?php include '../partials/sidebar.php'; ?>
-      </div>
-    </div>
    <main class="main">
       <div class="header">
         <h3> Manage Student Results</h3>

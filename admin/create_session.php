@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Create Session</title>
+    <title>Create Batch</title>
     <link rel="stylesheet" href="../assets/styles.css">
     <link rel="stylesheet" href="../assets/sidebar.css">
     <link rel="stylesheet" href="../assets/admin-routine.css">
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include '../partials/sidebar.php'; ?>
     <main class="main">
         <div class="card-header -white mt-5">
-            <h4>Create New Session</h4>
+            <h4>Create New Batch</h4>
         </div>
         <div class="card-body">
 
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <form method="POST">
                 <div class="mb-3">
-                    <label class="form-label">Session Name</label>
+                    <label class="form-label">Batch Name</label>
                     <input type="text" name="session_name" class="form-control" placeholder="e.g., 2024-2025" required>
                 </div>
 
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <textarea name="remarks" class="form-control" rows="2"></textarea>
                 </div>
 
-                <button class="btn">Create Session</button>
+                <button class="btn">Create Batch</button>
             </form>
 
         </div>

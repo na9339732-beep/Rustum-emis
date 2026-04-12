@@ -75,9 +75,10 @@ if ($exam_id <= 0) {
 }
 
 // Fetch exam details
-$exam_query = $conn->prepare("SELECT e.exam_id, e.exam_title, e.class_id, c.class_name, e.start_date, e.end_date 
+$exam_query = $conn->prepare("SELECT e.exam_id, e.exam_title, e.class_id, c.class_name, e.start_date, e.end_date, s.session_name
                               FROM exams e
                               JOIN classes c ON c.class_id = e.class_id
+                              Join sessions s on c.session_id= s.session_id
                               WHERE e.exam_id = ?");
 $exam_query->bind_param("i", $exam_id);
 $exam_query->execute();
@@ -112,18 +113,13 @@ $subjects_result = $subjects_query->get_result();
     <link rel="stylesheet" href="../assets/admin-dashboard.css">
 </head>
 <body>
-<div class="container mt-4">
-
-    <!-- Sidebar for desktop -->
-    <div class="col-lg-auto d-none d-lg-block position-sticky top-0">
+<div class="container">
         <?php include '../partials/sidebar.php'; ?>
-    </div>
-
-    <main class="main">
+    <main class="main mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
                 <h3><?= htmlspecialchars($exam['exam_title']) ?></h3>
-                <small class="text-muted"><?= htmlspecialchars($exam['class_name']) ?> — <?= $exam['start_date'] ?> to <?= $exam['end_date'] ?></small>
+                <small class="text-muted">Class: <?= htmlspecialchars($exam['class_name']) ?> Batch: <?= htmlspecialchars($exam['session_name']) ?> From: <?= $exam['start_date'] ?> to <?= $exam['end_date'] ?></small>
             </div>
             <button class="btn btn-primary rounded-4" data-bs-toggle="collapse" data-bs-target="#addSubjectForm">
                 <i class="bi bi-plus-circle"></i> Add Subject

@@ -73,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         if ($ins->execute()) {
 
                             // Send verification email
-                            $verifyLink = "http://localhost/finalEmis/verify.php?token=$token";
+                            $verifyLink = "http://localhost/finalEmis/verify_email.php?token=$token";
                             $message = "Click the link to verify your email: $verifyLink";
                             sendEmail($email, "Verify Your Email", $message);
 
@@ -105,7 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         $successMsg = "Account created! Complete student profile.";
 
                         // Send verification email
-                        $verifyLink = "http://localhost/finalEmis//verify.php?token=$token";
+                        $verifyLink = "http://localhost/finalEmis/verify_email.php?token=$token";
                         $message = "Click the link to verify your email: $verifyLink";
                         sendEmail($email, "Verify Your Email", $message);
 
@@ -230,7 +230,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     </div>
                  </div>
                 <button class="btn-primary">Continue</button>
+                Already have an account? <a href="login.php">Login</a>
                 </form>
+
                 <?php endif; ?>
 
                 <?php if($step==2): ?>
@@ -239,53 +241,57 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <input type="hidden" name="step2">
                  </div>
                 <div class="input-group">
-                    <label>Father Name</label>
-                    <input class="rounded" type="text" name="father_name" required>
+                    <div class="col-md-5">
+                        <label>Father Name</label>
+                        <input class="rounded" type="text" name="father_name" required>
+                    </div>
+                    <div class="col-md-5 ms-3">
+                        <label>Phone</label>
+                    <input class="rounded" type="text" name="phone" required>
+                    </div>
                  </div>
                 <div class="input-group">
-                    <label>Phone</label>
-                    <input class="rounded" type="text" name="phone" required>
+                    <div class="col-md-5">
+                        <label>City</label>
+                        <input class="rounded" type="text" name="city">
+                    </div>
+                    <div class="col-md-5 ms-3">
+                        <label>Date of Birth</label>
+                        <input class="rounded" type="date" name="dob" required>
+                    </div>
                 </div>
                 <div class="input-group">
-                    <label>Gender</label>
+                    <div class="col-md-5">
+                        <label>Student CNIC</label>
+                            <input class="rounded" type="text" name="student_cnic">
+                    </div>
+                    <div class="col-md-5 ms-3">
+                        <label>Father CNIC</label>
+                        <input class="rounded" type="text" name="father_cnic">
+                    </div>
+                </div>
+                <div class="mb-3 text-start">
+                        <label>Gender</label>
                         <select name="gender" required>
                             <option value="">Select</option>
                             <option>Male</option>
                             <option>Female</option>
                             <option>Other</option>
                         </select>
-                </div>
-                <div class="input-group">
-                    <label>Date of Birth</label>
-                    <input class="rounded" type="date" name="dob" required>
-                </div>
-                <div class="mb-3">
-                    <label>Class</label>
-                    <select name="class_id" required>
-                    <option value="">Select Class</option>
-                    <?php
-                    $q = $conn->query("SELECT class_id,class_name FROM classes WHERE class_status='active'");
-                    while($c=$q->fetch_assoc()):
-                    ?>
-                    <option value="<?= $c['class_id'] ?>"><?= htmlspecialchars($c['class_name']) ?></option>
-                    <?php endwhile; ?>
-                    </select>
+                        <label>Class</label>
+                        <select name="class_id" required>
+                        <option value="">Select Class</option>
+                        <?php
+                        $q = $conn->query("SELECT class_id,class_name FROM classes WHERE class_status='active'");
+                        while($c=$q->fetch_assoc()):
+                        ?>
+                        <option value="<?= $c['class_id'] ?>"><?= htmlspecialchars($c['class_name']) ?></option>
+                        <?php endwhile; ?>
+                        </select>
                 </div>
                 <div class="input-group">
                     <label>Address</label>
-                        <input class="rounded" type="text" name="address">
-                </div>
-                <div class="input-group">
-                    <label>City</label>
-                        <input class="rounded" type="text" name="city">
-                </div>
-                <div class="input-group">
-                    <label>Student CNIC</label>
-                        <input class="rounded" type="text" name="student_cnic">
-                </div>
-                <div class="input-group">
-                    <label>Father CNIC</label>
-                    <input class="rounded" type="text" name="father_cnic">
+                    <input class="rounded" type="text" name="address">
                 </div>
                     <button style="width:100%" class="btn-primary">Complete Registration</button>
             </form>

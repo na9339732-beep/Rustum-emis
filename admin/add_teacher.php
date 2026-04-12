@@ -260,7 +260,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="mt-4">
               <button class="btn btn-primary btn-lg">Add Teacher</button>
-              <a href="admin-teachers.php" class="btn btn-secondary btn-lg ms-2">Back</a>
+              <a href="admin-teachers.php" class="btn btn-secondary btn-lg ms-3">Back</a>
             </div>
 
           </form>

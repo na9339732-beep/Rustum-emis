@@ -78,11 +78,10 @@ foreach ($attendance as $row) {
 <meta charset="utf-8">
 <title>My Attendance</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link rel="stylesheet" href="../assets/styles.css">
-<link rel="stylesheet" href="../assets/sidebar.css">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="../assets/sidebar.css">
 <style>
 .badge-present{background:#28a745}
 .badge-absent{background:#dc3545}
@@ -91,16 +90,12 @@ foreach ($attendance as $row) {
 </head>
 
 <body>
-<div class="container-fluid">
-<div class="row">
+<div class="container">
 
-<!-- SIDEBAR -->
-<div class="col-lg-3 d-none d-lg-block bg-white shadow-sm position-sticky top-0">
     <?php include '../partials/sidebar.php'; ?>
-</div>
 
 <!-- MAIN -->
-<main class="col-lg-9 p-4">
+<main class="main">
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="fw-bold">My Attendance</h4>
@@ -179,7 +174,6 @@ foreach ($attendance as $row) {
 </div>
 
 </main>
-</div>
 </div>
 
 </body>

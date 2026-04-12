@@ -67,17 +67,14 @@ $materials = $stmtMaterials->get_result();
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Student Dashboard — School Portal</title>
-  <link rel="stylesheet" href="../assets/styles.css">
-  <link rel="stylesheet" href="../assets/sidebar.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="../assets/sidebar.css">
 </head>
 <body>
   <div class="container">
-    <div class="col-lg-2 d-none d-lg-block bg-white glass shadow-sm position-sticky top-0">
-      <div class="pt-4 px-lg-2 pt-5">
-        <?php include '../partials/sidebar.php'; ?>
-      </div>
-    </div>
+    <?php include '../partials/sidebar.php'; ?>
 
     <main class="main">
       <div class="header">

@@ -102,10 +102,7 @@ if (isset($_GET['action'], $_GET['id'])) {
 
 <div class="container">
 
-<!-- Sidebar -->
-<div>
   <?php include '../partials/sidebar.php'; ?>
-</div>
 
 <!-- Main Content -->
 <main class="main">

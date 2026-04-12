@@ -5,7 +5,31 @@ include '../config/db.php';
 // ----------------------
 // SELECT CLASS (dynamic)
 // ----------------------
-$class_id = $_GET['class_id'] ?? 1;  // Or use logged-in student class_id
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Student') {
+    header("Location: ../login.php");
+    exit();
+}
+
+$user_id = $_SESSION['user_id'];
+
+// Get student's profile dynamically with class name
+$stmtStudent = $conn->prepare("
+    SELECT s.*, c.class_name, c.class_id
+    FROM students s
+    LEFT JOIN classes c ON s.class_id = c.class_id
+    WHERE s.user_id = ?
+");
+$stmtStudent->bind_param("i", $user_id);
+$stmtStudent->execute();
+$resultStudent = $stmtStudent->get_result();
+
+if ($resultStudent->num_rows === 0) {
+    die("Student profile not found.");
+}
+
+$student = $resultStudent->fetch_assoc();
+$student_id = $student['student_id'];
+$class_id = $student['class_id'];
 
 // Get class name
 $classSql = "SELECT class_name FROM classes WHERE class_id = ?";
@@ -29,7 +53,7 @@ $result = $stmt->get_result();
 
 // Build array by time slot & day
 $routine = [];
-$days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+$days = ["Monday","Tuesday","Wednesday","Thursday","Friday"];
 
 // Format time slot and store subjects
 while($row = $result->fetch_assoc()){
@@ -44,18 +68,15 @@ while($row = $result->fetch_assoc()){
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Class Routine</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="../assets/styles.css">
-  <link rel="stylesheet" href="../assets/sidebar.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="../assets/sidebar.css">
 </head>
 <body>
 
 <div class="container">
-  <div class="col-lg-2 col-md-2 d-none d-lg-block bg-white glass shadow-sm position-sticky top-0">
-      <div class="pt-4 px-lg-2 pt-5">
-          <?php include '../partials/sidebar.php'; ?>
-      </div>
-  </div>
+  <?php include '../partials/sidebar.php'; ?>
 
   <main class="main">
     <div class="header">

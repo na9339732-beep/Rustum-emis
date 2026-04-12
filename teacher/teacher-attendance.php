@@ -95,10 +95,10 @@ if ($class_id) {
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Take Attendance — EMIS Portal</title>
-<link rel="stylesheet" href="../assets/styles.css">
-<link rel="stylesheet" href="../assets/sidebar.css">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="../assets/sidebar.css">
 <style>
     .attendance-table th { background: #f8f9fa; font-weight: 600; text-align: center; }
     .attendance-table td { vertical-align: middle; }
@@ -109,11 +109,7 @@ if ($class_id) {
 <body>
 <div class="container">
     <!-- Sidebar -->
-    <div class="col-lg-3 d-none d-lg-block bg-white glass shadow-sm position-sticky top-0" style="">
-        <div class="">
-            <?php include '../partials/sidebar.php'; ?>
-        </div>
-    </div>
+    <?php include '../partials/sidebar.php'; ?>
 
     <!-- Main Content -->
     <main class="main" >
