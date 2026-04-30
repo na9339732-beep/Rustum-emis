@@ -26,6 +26,9 @@ $current_page = basename($_SERVER['PHP_SELF']); // to highlight active page
             <a href="admin-students.php" class="nav-link <?= strpos($current_page, 'admin-students') !== false ? 'active' : '' ?>">
                 <i class="bi bi-people"></i> Manage Students
             </a>
+            <a href="admin-parents.php" class="nav-link <?= strpos($current_page, 'admin-parents') !== false ? 'active' : '' ?>">
+                <i class="bi bi-person-lines-fill"></i> Manage Parents
+            </a>
             <a href="admin-routines.php" class="nav-link <?= strpos($current_page, 'admin-routines') !== false ? 'active' : '' ?>">
                 <i class="bi bi-calendar3"></i> Routines & Timings
             </a>
@@ -50,6 +53,10 @@ $current_page = basename($_SERVER['PHP_SELF']); // to highlight active page
             </a>
             <a href="teacher-materials.php" class="nav-link <?= strpos($current_page, 'teacher-materials') !== false ? 'active' : '' ?>">
                 <i class="bi bi-collection"></i> Manage Materials
+            </a>
+
+            <a href="view-profile.php" class="nav-link <?= strpos($current_page, 'view-profile') !== false ? 'active' : '' ?>">
+                <i class="bi bi-person-bounding-box"></i> View Profile
             </a>
             <a href="teacher-attendance.php" class="nav-link <?= strpos($current_page, 'teacher-attendance') !== false ? 'active' : '' ?>">
                 <i class="bi bi-check2-circle"></i> Take Attendance
@@ -103,21 +110,25 @@ $current_page = basename($_SERVER['PHP_SELF']); // to highlight active page
 <div class="mobile-bottom-nav d-lg-none fixed-bottom bg-white border-top shadow-lg">
     <div class="d-flex justify-content-around align-items-center h-100 flex-wrap">
 
+        <a href="index.php" class="nav-icon <?= $current_page == 'index.php' ? 'active' : '' ?>"><i class="bi bi-house-door fs-4"></i><div>Home</div></a>
         <!-- Admin & SuperAdmin -->
         <?php if ($role === 'Admin' ): ?>
-            <a href="index.php" class="nav-icon <?= $current_page == 'index.php' ? 'active' : '' ?>"><i class="bi bi-house-door fs-4"></i><div>Home</div></a>
             <a href="admin-students.php" class="nav-icon"><i class="bi bi-people fs-4"></i><div>Students</div></a>
             <a href="admin-teachers.php" class="nav-icon"><i class="bi bi-person-badge fs-4"></i><div>Teachers</div></a>
+            <a href="admin-parents.php" class="nav-icon"><i class="bi bi-person-lines-fill fs-4"></i><div>Parents</div></a>
             <a href="admin-routines.php" class="nav-icon"><i class="bi bi-calendar3 fs-4"></i><div>Routines</div></a>
             <a href="admin-exams.php" class="nav-icon"><i class="bi bi-file-earmark-text fs-4"></i><div>Exams</div></a>
             <a href="admin-attendance.php" class="nav-icon"><i class="bi bi-check2-square fs-4"></i><div>Attendance</div></a>
             <a href="manage-sessions.php" class="nav-icon"><i class="bi bi-calendar-check fs-4"></i><div>Batches</div></a>
             <a href="manage-classes.php" class="nav-icon"><i class="bi bi-building fs-4"></i><div>Classes</div></a>
         <?php elseif ($role === 'Teacher'): ?>
-            <a href="teacher-classes.php" class="nav-icon"><i class="bi bi-collection fs-4"></i><div>Classes</div></a>
-            <a href="teacher-attendance.php" class="nav-icon"><i class="bi bi-check2-circle fs-4"></i><div>Attendance</div></a>
-            <a href="teacher-routine.php" class="nav-icon"><i class="bi bi-calendar-week fs-4"></i><div>Routine</div></a>
-             <a href="manage_results.php" class="nav-icon"><i class="bi trophy fs-4"></i><div>Results</div></a>
+            <a href="teacher-routine.php" class="nav-icon"><i class="bi bi-person-bounding-box"></i><div>Routine</div></a>
+            
+            <a href="teacher-routine.php" class="nav-icon"><i class="bi bi-check fs-4"></i><div>Routine</div></a>
+            <a href="teacher-materials.php" class="nav-icon"><i class="bi bi-collection fs-4"></i><div>Materials</div></a>
+            <a href="teacher-attendance.php" class="nav-icon"><i class="bi bi-calendar-week fs-4"></i><div>Attendance</div></a>
+            <a href="manage_results.php" class="nav-icon"><i class="bi bi-trophy fs-4"></i><div>Results</div></a>
+            <a href="teacher-students.php" class="nav-icon"><i class="bi bi-person fs-4"></i><div>Results</div></a>
         <?php elseif ($role === 'Student'): ?>
             <a href="student-materials.php" class="nav-icon"><i class="bi bi-book fs-4"></i><div>Materials</div></a>
             <a href="student-routine.php" class="nav-icon"><i class="bi bi-calendar-week fs-4"></i><div>Routine</div></a>
@@ -133,3 +144,58 @@ $current_page = basename($_SERVER['PHP_SELF']); // to highlight active page
     </div>
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const tables = document.querySelectorAll('main table');
+
+    tables.forEach(function (table) {
+        if (table.closest('.no-responsive-table')) {
+            return;
+        }
+
+        table.classList.add('responsive-table');
+
+        let headerCells = Array.from(table.querySelectorAll('thead th'));
+        if (!headerCells.length) {
+            const firstRow = table.querySelector('tr');
+            if (firstRow) {
+                headerCells = Array.from(firstRow.children).filter(function (cell) {
+                    return cell.tagName === 'TH' || cell.tagName === 'TD';
+                });
+            }
+        }
+
+        const labels = headerCells.map(function (cell) {
+            return cell.textContent.replace(/\s+/g, ' ').trim();
+        });
+
+        const rows = table.querySelectorAll('tbody tr, tr');
+        rows.forEach(function (row) {
+            const cells = Array.from(row.children).filter(function (cell) {
+                return cell.tagName === 'TD' || cell.tagName === 'TH';
+            });
+
+            if (!cells.length) {
+                return;
+            }
+
+            const isFullWidthMessage = cells.length === 1 && Number(cells[0].getAttribute('colspan') || 1) > 1;
+
+            cells.forEach(function (cell, index) {
+                if (row.parentElement && row.parentElement.tagName === 'THEAD') {
+                    return;
+                }
+
+                if (isFullWidthMessage) {
+                    cell.setAttribute('data-no-label', 'true');
+                    return;
+                }
+
+                const label = labels[index] || ('Column ' + (index + 1));
+                cell.setAttribute('data-label', label);
+                cell.removeAttribute('data-no-label');
+            });
+        });
+    });
+});
+</script>

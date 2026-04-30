@@ -1,6 +1,6 @@
 <?php
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
 session_start();
 include '../config/db.php';
 
@@ -54,12 +54,15 @@ if (isset($_POST['save'])) {
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Set Meeting Availability</title>
-        <link rel="stylesheet" href="../assets/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../assets/styles.css">
     <link rel="stylesheet" href="../assets/sidebar.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
-        body { font-family: Arial; padding: 30px; max-width: 400px; margin: auto; }
+        
         input, button {
             width: 100%;
             padding: 10px;
@@ -84,9 +87,7 @@ if (isset($_POST['save'])) {
 </head>
 <body>
   <div class="container">
-      <div class="">
         <?php include '../partials/sidebar.php'; ?>
-    </div>
    <main class="main">
 <h2>Set PTM Availability</h2>
 
@@ -109,9 +110,9 @@ if (isset($_POST['save'])) {
     <label>End Time</label>
     <input type="time" name="end_time" required>
 
-    <button class="btn" name="save">Save Availability</button>
-    
+    <button class="btn" name="save">Save Availability</button>    
     </form>
+    <a href="./index.php" class="btn mt-1">Back to Dashboard</a>
 </main>
 </div>
 </body>

@@ -26,7 +26,10 @@ unset($_SESSION['errors'], $_SESSION['success']);
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 <link rel="stylesheet" href="../assets/admin-dashboard.css"></head>
 <body>
-<div class="container mt-5">
+<div class="container">
+    <?php include '../partials/sidebar.php'; ?>
+
+    <main class="main">
     <h2 class="mb-4">Add New Subject</h2>
 
     <?php if(!empty($errors)): ?>
@@ -79,6 +82,7 @@ unset($_SESSION['errors'], $_SESSION['success']);
 
         <button type="submit" class="btn btn-primary">Add Subject</button>
     </form>
+    <main>
 </div>
 </body>
 </html>

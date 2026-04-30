@@ -69,8 +69,8 @@ if (!$no_children) {
     $class_id = $child['class_id'];
 
     // Get session_id
-    $stmt = $conn->prepare("SELECT session_id FROM classes WHERE class_id = ?");
-    $stmt->bind_param("i", $class_id);
+    $stmt = $conn->prepare("SELECT session_id FROM students WHERE student_id = ?");
+    $stmt->bind_param("i", $selected_child_id);
     $stmt->execute();
     $class_row = $stmt->get_result()->fetch_assoc();
     $stmt->close();
@@ -85,6 +85,9 @@ if (!$no_children) {
           AND tc.session_id = ?
         ORDER BY t.teacher_name, tc.subject
     ");
+    if (!$stmt) {
+        die("Prepare failed: " . $conn->error);
+    }
     $stmt->bind_param("ii", $class_id, $session_id);
     $stmt->execute();
     $teacher_result = $stmt->get_result();
@@ -106,6 +109,7 @@ if (!$no_children) {
     <link rel="stylesheet" href="../assets/styles.css">
     <link rel="stylesheet" href="../assets/sidebar.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <style>
         .child-selector { margin: 16px 0; }
         .child-btn { 
@@ -143,7 +147,11 @@ if (!$no_children) {
             <div style="font-size:20px;font-weight:700">Parent-Teacher Meeting</div>
             <div style="font-size:13px;font-weight:700"><?= htmlspecialchars($_SESSION['username'] ?? 'Parent') ?> (Parent)</div>
         </div>
-
+    <?php if (isset($_GET['msg']) && $_GET['msg']=="requested"): ?>
+        <div class="alert alert-success">
+             Requested successfully! The teacher will review your request and get back to you soon.
+        </div>
+    <?php endif; ?>
         <?php if ($no_children): ?>
             <div class="card">
                 <div class="alert alert-info">
@@ -201,7 +209,7 @@ if (!$no_children) {
                             </div>
 
                             <div>
-                                <button type="submit" class="btn">Book Meeting</button>
+                                <button type="submit" class="btn text-light">Book Meeting</button>
                             </div>
                         </div>
                     </form>

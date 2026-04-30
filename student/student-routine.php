@@ -53,7 +53,7 @@ $result = $stmt->get_result();
 
 // Build array by time slot & day
 $routine = [];
-$days = ["Monday","Tuesday","Wednesday","Thursday","Friday"];
+$days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
 // Format time slot and store subjects
 while($row = $result->fetch_assoc()){

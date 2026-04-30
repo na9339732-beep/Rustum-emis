@@ -19,9 +19,9 @@ if (isset($_POST['submit'])) {
     $stmt->bind_param("sss", $title, $message, $user_type);
 
     if ($stmt->execute()) {
-        echo "<p style='color:green;'>Notification saved successfully!</p>";
+        echo "<script>alert('Notification saved successfully!');</script>";
     } else {
-        echo "<p style='color:red;'>Error saving notification</p>";
+        echo "<script>alert('Error saving notification:S');</script> "  ;
     }
 
     $stmt->close();
@@ -65,7 +65,7 @@ if (isset($_POST['submit'])) {
                 <option value="Parents">Parents</option>
                 <option value="Student">Student</option>
                 <option value="Teacher">Teacher</option>
-                <option value="Admin">Admin</option>
+                
             </select>
 
             <button class="btn" type="submit" name="submit">Save Notification</button>

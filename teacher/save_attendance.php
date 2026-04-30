@@ -10,7 +10,7 @@ if(!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Teacher'){
     exit;
 }
 
-$teacher_id = $_SESSION['user_id'];
+$teacher_id = $_SESSION['teacher_id'] ?? null;
 
 // Get POST data
 $class_id = intval($_POST['class_id'] ?? 0);
@@ -26,28 +26,44 @@ if(!$class_id || empty($statuses)){
 // Prepare statements
 $select_stmt = $conn->prepare("SELECT attendance_id FROM attendance WHERE student_id=? AND class_id=? AND teacher_id=? AND attendance_date=?");
 $insert_stmt = $conn->prepare("INSERT INTO attendance (student_id, class_id, teacher_id, attendance_date, status) VALUES (?, ?, ?, ?, ?)");
+
 $update_stmt = $conn->prepare("UPDATE attendance SET status=? WHERE attendance_id=?");
+if (!$select_stmt || !$insert_stmt || !$update_stmt) {
+    die("Prepare failed: " . $conn->error);
+}
 
-// Loop through each student
 foreach($statuses as $student_id => $status){
-    $student_id = intval($student_id);
-    $status = $conn->real_escape_string($status);
 
-    // Check if attendance already exists
+    $student_id = intval($student_id);
+
     $select_stmt->bind_param("iiis", $student_id, $class_id, $teacher_id, $today_date);
     $select_stmt->execute();
+
+    if ($select_stmt->error) {
+        die("Select Error: " . $select_stmt->error);
+    }
+
     $res = $select_stmt->get_result();
-    
+
     if($res->num_rows > 0){
-        // Update existing record
         $row = $res->fetch_assoc();
         $attendance_id = $row['attendance_id'];
+
         $update_stmt->bind_param("si", $status, $attendance_id);
         $update_stmt->execute();
+
+        if ($update_stmt->error) {
+            die("Update Error: " . $update_stmt->error);
+        }
+
     } else {
-        // Insert new record
+
         $insert_stmt->bind_param("iiiss", $student_id, $class_id, $teacher_id, $today_date, $status);
         $insert_stmt->execute();
+
+        if ($insert_stmt->error) {
+            die("Insert Error: " . $insert_stmt->error);
+        }
     }
 }
 

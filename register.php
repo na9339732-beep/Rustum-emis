@@ -73,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         if ($ins->execute()) {
 
                             // Send verification email
-                            $verifyLink = "http://localhost/finalEmis/verify_email.php?token=$token";
+                            $verifyLink = "http://finalEmis/verify.php?token=$token";
                             $message = "Click the link to verify your email: $verifyLink";
                             sendEmail($email, "Verify Your Email", $message);
 
@@ -105,7 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         $successMsg = "Account created! Complete student profile.";
 
                         // Send verification email
-                        $verifyLink = "http://localhost/finalEmis/verify_email.php?token=$token";
+                        $verifyLink = "http://finalEmis/verify.php?token=$token";
                         $message = "Click the link to verify your email: $verifyLink";
                         sendEmail($email, "Verify Your Email", $message);
 
@@ -224,9 +224,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <input class="rounded" type="password" name="password" required>
                 </div>
                 <div class="input-group">
-                    <div id="pcnic" style="display:none">
+                    <div id="pcnic" style="display:none; min-width:100%">
                         <label>Parent CNIC</label>
-                        <input class="rounded" type="text" name="parent_cnic">
+                        <input class="rounded" type="text" name="parent_cnic" placeholder="Required for Parents">
                     </div>
                  </div>
                 <button class="btn-primary">Continue</button>

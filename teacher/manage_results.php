@@ -48,12 +48,37 @@ $sessions = $conn->query("
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $student_id = $_POST['student_id'];
-    $subject    = $_POST['subject'];
-    $marks      = $_POST['marks'];
+    $subject    = $_POST['subject']
     $grade      = $_POST['grade'];
     $exam_term  = $_POST['exam_term'];
     $session_id = $_POST['session_id'];
     $edit_id    = $_POST['edit_id'] ?? null;
+    $marks = $_POST['marks'] ?? '';
+
+        // Check format: 1 to 3 digits / 1 to 3 digits
+        if (!preg_match('/^\d{1,3}\s*\/\s*\d{1,3}$/', $marks)) {
+            echo "Invalid format! Use format like 45/50 or 100/100 (max 3 digits)";
+            exit;
+        }
+
+        // Split values
+        list($obtained, $total) = explode('/', $marks);
+
+        $obtained = (int) trim($obtained);
+        $total = (int) trim($total);
+
+        // Logical validation
+        if ($total == 0) {
+            echo "Total marks cannot be zero!";
+            exit;
+        }
+
+        if ($obtained > $total) {
+            echo "Obtained marks cannot be greater than total marks!";
+            exit;
+        }
+
+
 
     if ($edit_id) {
         $stmt = $conn->prepare("
@@ -132,17 +157,17 @@ $results = $conn->query("
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Manage Results — EMIS Portal</title>
-     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../assets/styles.css">
     <link rel="stylesheet" href="../assets/sidebar.css">
 <style>
-.table{width:100%;border-collapse:collapse}
-.table th,.table td{border:1px solid #ccc;padding:8px}
-.form-control{width:100%;padding:8px;margin-bottom:8px}
-.btn-save{background:#4a63e7;color:#fff}
-.btn-del{background:#e74c3c;color:#fff}
-.btn-edit{background:#f39c12;color:#fff}
+    .table{width:100%;border-collapse:collapse}
+    .table th,.table td{border:1px solid #ccc;padding:8px}
+    .form-control{width:100%;padding:8px;margin-bottom:8px}
+    .btn-save{background:#4a63e7;color:#fff}
+    .btn-del{background:#e74c3c;color:#fff}
+    .btn-edit{background:#f39c12;color:#fff}
 </style>
 </head>
 
@@ -177,16 +202,16 @@ $results = $conn->query("
         </select>
 
         <input type="number" name="marks" class="form-control"
-        value="<?= $edit['marks'] ?? '' ?>" placeholder="Marks" required>
+        value="<?= $edit['marks'] ?? '' ?>" placeholder="Obtained Marks/ Total Marks" required>
 
-        <input name="grade" class="form-control"
+        <input type="text" name="grade" class="form-control"
         value="<?= $edit['grade'] ?? '' ?>" placeholder="Grade (A/B/C)" required>
 
-        <input name="exam_term" class="form-control"
+        <input type="text" name="exam_term" class="form-control"
         value="<?= $edit['exam_term'] ?? 'Final' ?>" placeholder="Exam Term">
 
         <select name="session_id" class="form-control">
-        <option value="">Select Session</option>
+        <option value="">Select Batch</option>
         <?php foreach($sessions as $ses): ?>
         <option value="<?= $ses['session_id'] ?>"
         <?= ($edit && $edit['session_id']==$ses['session_id'])?'selected':'' ?>>
@@ -210,7 +235,7 @@ $results = $conn->query("
         <th>Marks</th>
         <th>Grade</th>
         <th>Term</th>
-        <th>Session</th>
+        <th>Batch</th>
         <th>Action</th>
         </tr>
 
@@ -224,8 +249,8 @@ $results = $conn->query("
         <td><?= $r['exam_term'] ?></td>
         <td><?= $r['session_name'] ?></td>
         <td>
-        <a class="btn btn-edit" href="?edit=<?= $r['id'] ?>">Edit</a>
-        <a class="btn btn-del" href="?delete=<?= $r['id'] ?>"
+        <a class="btn mb-1" href="?edit=<?= $r['id'] ?>">Edit</a>
+        <a class="btn" href="?delete=<?= $r['id'] ?>"
         onclick="return confirm('Delete result?')">Delete</a>
         </td>
         </tr>

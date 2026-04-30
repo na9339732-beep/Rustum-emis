@@ -28,15 +28,30 @@ if ($resultStudent->num_rows === 0) {
 }
 
 $student = $resultStudent->fetch_assoc();
+if($student["status"]=="banned"){
+   session_destroy();
+    die("<script>alert('You are banned form accessing your account.');</script>");
+    header("Location: ../login.php");
+    exit();
+}
+if($student["status"]=="suspended"){
+   session_destroy();
+    die("<script>alert('You are suspended form accessing your account.');</script>");
+    header("Location: ../login.php");
+    exit();
+}
 $student_id = $student['student_id'];
 
 // Fetch student results dynamically
 $stmtResults = $conn->prepare("
-    SELECT subject, marks, grade 
+    SELECT subject, marks, grade, exam_term
     FROM results 
     WHERE student_id = ? 
     ORDER BY id DESC
 ");
+if (!$stmtResults) {
+    die("Prepare failed: " . $conn->error);
+}
 $stmtResults->bind_param("i", $student_id);
 $stmtResults->execute();
 $results = $stmtResults->get_result();
@@ -104,7 +119,7 @@ $results = $stmtResults->get_result();
 
         <table class="table" style="margin-top:12px">
           <thead>
-            <tr><th>Subject</th><th>Marks</th><th>Grade</th></tr>
+            <tr><th>Subject</th><th>Marks</th><th>Grade</th><th>Exam Term</th></tr>
           </thead>
           <tbody>
             <?php if ($results->num_rows > 0): ?>
@@ -113,10 +128,11 @@ $results = $stmtResults->get_result();
                     <td><?= htmlspecialchars($row['subject']); ?></td>
                     <td><?= htmlspecialchars($row['marks']); ?></td>
                     <td><?= htmlspecialchars($row['grade']); ?></td>
+                    <td><?= htmlspecialchars($row['exam_term']); ?></td>
                   </tr>
                 <?php endwhile; ?>
             <?php else: ?>
-              <tr><td colspan="3" style="text-align:center;color:gray">No results found</td></tr>
+              <tr><td colspan="4" style="text-align:center;color:gray">No results found</td></tr>
             <?php endif; ?>
           </tbody>
         </table>

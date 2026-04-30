@@ -78,16 +78,14 @@ sort($time_slots);
     <title>Class Routine — <?= htmlspecialchars($childName) ?> | EMIS Portal</title>
     <link rel="stylesheet" href="../assets/styles.css">
     <link rel="stylesheet" href="../assets/sidebar.css">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
 <div class="container">
-    <!-- Desktop Sidebar -->
-    <div class="col-lg-2 d-none d-lg-block bg-white glass shadow-sm position-sticky top-0" style="height: 100vh;">
-        <div class="pt-4 px-lg-2 pt-5">
-            <?php include '../partials/sidebar.php'; ?>
-        </div>
-    </div>
+
+ 
+    <?php include '../partials/sidebar.php'; ?>
 
     <main class="main">
         <div class="header">

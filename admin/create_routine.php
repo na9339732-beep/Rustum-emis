@@ -13,6 +13,8 @@ if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin'){
 // Fetch classes
 $classes = mysqli_query($conn, "SELECT class_id, class_name FROM classes WHERE class_status='active' ORDER BY class_name ASC");
 
+//fetch students
+$subject = mysqli_query($conn, "SELECT * FROM `subjects` ORDER BY `subjects`.`subject_name` ASC");
 // Fetch teachers
 $teachers = mysqli_query($conn, "SELECT teacher_id, teacher_name, subject FROM teachers ORDER BY teacher_name ASC");
 
@@ -105,7 +107,7 @@ function validateForm() {
             <div class="alert alert-success">Routine created successfully!</div>
         <?php endif; ?>
         <?php if($error): ?>
-            <div class="alert alert-danger">Error creating routine.</div>
+            <div class="alert alert-danger">Error creating routine. <?php echo $error;?></div>
         <?php endif; ?>
     <!-- Session -->
         <label class="fw-bold">Session</label>
@@ -127,7 +129,12 @@ function validateForm() {
 
         <!-- Subject -->
         <label class="fw-bold">Subject</label>
-        <input type="text" name="subject" class="form-control mb-3" required>
+        <select name="subject" class="form-select mb-3" required>
+            <option value="">Select Subject</option>
+            <?php while($t = mysqli_fetch_assoc($subject)): ?>
+                <option value="<?= $t['subject_name']; ?>"><?=$t['subject_name']; ?> </option>
+            <?php endwhile; ?>
+        </select>
 
         <!-- Teacher -->
         <label class="fw-bold">Teacher</label>

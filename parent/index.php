@@ -16,7 +16,7 @@ $_SESSION['user_id'] = $parent_id; // store in session
 // Fetch children linked to this parent via CNIC
 $children = [];
 $stmt = $conn->prepare("
-    SELECT s.student_id, s.student_name, c.class_name
+    SELECT s.student_id, s.student_name, c.class_name, s.status
     FROM students s
     JOIN classes c ON s.class_id = c.class_id
     JOIN users u ON u.cnic = s.father_cnic
@@ -93,6 +93,7 @@ if (!empty($children)) {
   <title>Parent Dashboard — School Portal</title>
   <link rel="stylesheet" href="../assets/styles.css">
   <link rel="stylesheet" href="../assets/sidebar.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
 <body>
@@ -122,16 +123,21 @@ if (!empty($children)) {
       <div class="card">
         <div style="font-weight:700">Child</div>
         <div style="margin-top:8px;color:var(--muted)">
-          <?= htmlspecialchars($child['student_name']) ?> — <?= htmlspecialchars($child['class_name']) ?>
+          <?= htmlspecialchars($child['student_name']) ?> <br> <?= htmlspecialchars($child['class_name']) ?> —   <?php 
+        if($child['status'] != 'admitted') {
+            echo '<div class="alert alert-danger" role="alert">' . htmlspecialchars($child['status']) . '</div>';
+        }else  echo '<div class="alert alert-info" role="alert">' . htmlspecialchars($child['status']) . '</div>';
+        ?>
         </div>
       </div>
 
       <div class="card">
         <div style="font-weight:700">Attendance</div>
         <div style="margin-top:8px;color:var(--muted)">
-          <?= htmlspecialchars($child['student_name']) ?> — <?= htmlspecialchars($attendance[$child_id]) ?>% this term
+          <?= htmlspecialchars($child['student_name']) ?> <br> <?= htmlspecialchars($attendance[$child_id]) ?>% this term
         </div>
       </div>
+        <br>
       <?php endforeach; ?>
 
       <div class="card">

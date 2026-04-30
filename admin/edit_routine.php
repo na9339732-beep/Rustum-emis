@@ -149,8 +149,8 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
                 </div>
 
                 <div class="mt-4 d-flex justify-content-between">
-                    <a href="admin-routines.php" class="btn btn-light">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a href="admin-routines.php" class="btn ghost">Cancel</a>
+                    <button type="submit" class="btn ghost">Save Changes</button>
                 </div>
             </form>
         </div>

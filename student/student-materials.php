@@ -9,11 +9,7 @@ if (!isset($_SESSION['username'])) {
 }
 
 include '../config/db.php';
-$conn = mysqli_connect($servername, $username, $password, $dbname);
 
-if (!$conn) {
-    die("Database Connection Failed");
-}
 
 // Fetch study materials + subject names
 $query = "

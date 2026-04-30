@@ -13,7 +13,7 @@ include '../config/db.php';
 // ====== FETCH COUNTS ======
 $studentsCount = $conn->query("SELECT COUNT(*) AS total FROM students")->fetch_assoc()['total'];
 $teachersCount = $conn->query("SELECT COUNT(*) AS total FROM teachers")->fetch_assoc()['total'];
-$classesCount  = $conn->query("SELECT COUNT(*) AS total FROM classes")->fetch_assoc()['total'];
+$classesCount  = $conn->query("SELECT COUNT(*) AS total FROM classes  where class_status!='deleted'")->fetch_assoc()['total'];
 
 // ====== RECENT ACTIVITY (Last 5 registered users) ======
 $recentActivity = $conn->query("
@@ -106,8 +106,14 @@ $recentActivity = $conn->query("
                 <a href="create_class.php" class="btn btn-outline">
                     <i class="bi bi-building"></i> Create Class
                 </a>
+                 <a href="add_subject.php" class="btn">
+                    <i class="bi bi-plus"></i> Add Subject
+                </a>
                 <a href="manage_groups.php" class="btn btn-outline">
                     <i class="bi bi-book"></i> Manage Groups
+                </a>
+                <a href="add_department.php" class="btn btn-outline">
+                    <i class="bi bi-archive"></i> Manage Department
                 </a>
                   <a href="result.php" class="btn btn-outline">
                     <i class="bi bi-trophy"></i> View Results
@@ -118,6 +124,7 @@ $recentActivity = $conn->query("
                 <a href="add_notification.php" class="btn btn-outline">
                     <i class="bi bi-bell"></i> Create Notification
                 </a>
+                
             </div>
         </div>
     </main>

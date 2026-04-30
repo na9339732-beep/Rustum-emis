@@ -81,8 +81,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../assets/admin-dashboard.css">
     <style>
-        .routine-actions a { font-size: 0.82rem; text-decoration: none; margin-right: 0.6rem; }
-        .routine-actions a:hover { text-decoration: underline; }
+       
     </style>
 </head>
 <body>
@@ -146,9 +145,9 @@ while ($row = mysqli_fetch_assoc($result)) {
                                             <div class="routine-entry">
                                                 <?= $routine[$time][$day]['content'] ?>
                                                 <div class="routine-actions mt-1">
-                                                    <a href="edit_routine.php?id=<?= $routine[$time][$day]['id'] ?>">Edit</a>
+                                                  <a class="edit-button"  href="edit_routine.php?id=<?= $routine[$time][$day]['id'] ?>">Edit</a>
                                                     <span class="text-muted">|</span>
-                                                    <a href="delete_routine.php?id=<?= $routine[$time][$day]['id'] ?>" onclick="return confirm('Delete this routine entry?')">Delete</a>
+                                                   <a class="delete-button" href="delete_routine.php?id=<?= $routine[$time][$day]['id'] ?>" onclick="return confirm('Delete this routine entry?')">Delete</a>
                                                 </div>
                                             </div>
                                         <?php else: ?>

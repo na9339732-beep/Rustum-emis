@@ -10,16 +10,25 @@ if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin'){
     exit;
 }
 
-// Fetch Attendance Records (JOIN with class table)
+$where = "";
+
+if (!empty($_GET['from_date']) && !empty($_GET['to_date'])) {
+    $from = mysqli_real_escape_string($conn, $_GET['from_date']);
+    $to   = mysqli_real_escape_string($conn, $_GET['to_date']);
+
+    $where = "WHERE a.attendance_date BETWEEN '$from' AND '$to'";
+}
+
 $sql = "
     SELECT 
         a.attendance_date,
         c.class_name,
         SUM(a.status = 'Present') AS present_count,
         SUM(a.status = 'Absent') AS absent_count,
-        SUM(a.status = 'Leave')  AS leave_count
+        SUM(a.status = 'Leave') AS leave_count
     FROM attendance a
     JOIN classes c ON c.class_id = a.class_id
+    $where
     GROUP BY a.attendance_date, c.class_name
     ORDER BY a.attendance_date DESC
 ";
@@ -51,17 +60,37 @@ $result = mysqli_query($conn, $sql);
       <!-- Page Header -->
       <div class="d-flex justify-content-between align-items-center mb-4">
           <h3 class="fw-bold">Manage Attendance</h3>
-          <div>
-            <input type="text" class="form-control search rounded-4 shadow-sm d-inline-block" 
-                   placeholder="Search..." style="max-width:300px;">
-          </div>
+          <form method="GET" class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <input type="date" name="from_date" class="form-control"
+                      value="<?= $_GET['from_date'] ?? '' ?>">
+            </div>
+
+            <div class="col-md-3">
+                <input type="date" name="to_date" class="form-control"
+                      value="<?= $_GET['to_date'] ?? '' ?>">
+            </div>
+
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+            <div class="col-md-3">
+                <a href="admin-attendance.php" class="btn btn-secondary">Reset</a>
+            </div>
+        </form>
       </div>
 
       <!-- Attendance Card -->
       <div class="card p-4 shadow-sm col-lg-20">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h5 class="fw-bold">Attendance Calendar</h5>
-          <a class="btn btn-outline-primary" href="export_attendance.php">
+         <?php
+          $from = $_GET['from_date'] ?? '';
+          $to   = $_GET['to_date'] ?? '';
+          ?>
+
+          <a class="btn btn-outline-primary"
+            href="export_attendance.php?from_date=<?= urlencode($from) ?>&to_date=<?= urlencode($to) ?>">
             <i class="bi bi-file-earmark-arrow-down"></i> Export CSV
           </a>
         </div>

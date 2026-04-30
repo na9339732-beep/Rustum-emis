@@ -106,9 +106,16 @@ foreach ($attendance as $row) {
 </div>
 
 <!-- FILTER -->
-<form method="get" class="mb-3">
-    <label class="form-label fw-bold">Select Month</label>
-    <input type="month" name="month" value="<?= htmlspecialchars($month) ?>" class="form-control" style="max-width:200px">
+<form method="get" >
+    <div class="row g-2 mb-4 align-items-end">
+        <div class="col-auto">
+            <label class="form-label fw-bold">Select Month</label>
+            <input type="month" name="month" value="<?= htmlspecialchars($month) ?>" class="form-control" style="max-width:200px">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn mt-2">Filter</button>
+        </div>
+        </div>
 </form>
 
 <!-- STATS -->

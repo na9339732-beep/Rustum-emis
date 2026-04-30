@@ -30,10 +30,12 @@ if ($result->num_rows > 0) {
 ============================= */
 $classes = [];
 $stmt = $conn->prepare("
-    SELECT DISTINCT c.class_id, c.class_name, c.class_short
-    FROM classes c
-    JOIN teacher_classes tc ON c.class_id = tc.class_id
-    WHERE tc.teacher_id = ? AND tc.status = 'Active'
+    SELECT DISTINCT c.class_id, c.class_name, c.class_short, s.session_name 
+    FROM classes c 
+    JOIN teacher_classes tc ON c.class_id = tc.class_id 
+    Join sessions s on c.session_id= s.session_id
+    WHERE tc.teacher_id = ?
+    ORDER BY c.class_name
 ");
 $stmt->bind_param("i", $teacher_id);
 $stmt->execute();
@@ -60,11 +62,14 @@ if ($class_id) {
         FETCH STUDENTS OF CLASS
     ============================= */
     $stmt = $conn->prepare("
-        SELECT student_id, student_name, student_cnic
+        SELECT *
         FROM students
-        WHERE class_id = ? AND status = 'registered'
+        WHERE class_id = ? AND status = 'admitted'
         ORDER BY student_name
     ");
+    if (!$stmt) {
+        die("Prepare failed: " . $conn->error);
+    }
     $stmt->bind_param("i", $class_id);
     $stmt->execute();
     $res = $stmt->get_result();
@@ -114,7 +119,7 @@ if ($class_id) {
           <option value="">-- Choose Class --</option>
           <?php foreach ($classes as $c): ?>
             <option value="<?= $c['class_id'] ?>" <?= $class_id == $c['class_id'] ? 'selected' : '' ?>>
-              <?= htmlspecialchars($c['class_name']) ?> (<?= htmlspecialchars($c['class_short']) ?>)
+              <?= htmlspecialchars($c['class_name']) ?> (<?= htmlspecialchars($c['class_short']) ?>) - <?= htmlspecialchars($c['session_name']) ?>
             </option>
           <?php endforeach; ?>
         </select>

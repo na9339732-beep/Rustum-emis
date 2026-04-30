@@ -10,7 +10,7 @@ $message = '';
 $tokenExists = false; // Flag to show debug JS alert if needed
 
 if ($token) {
-    echo $token;
+    //echo $token;
     // ===== RESET PASSWORD FLOW =====
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password = $_POST['password'] ?? '';
@@ -77,9 +77,10 @@ if ($token) {
                 $update = $conn->prepare("UPDATE users SET reset_token = ?, reset_expires = ? WHERE email = ?");
                 $update->bind_param("sss", $token, $expires, $email);
                 $update->execute();
-
+//verify.php
                 if ($update->affected_rows > 0) {
-                    $resetLink = "http://localhost/finalEmis/forget_password.php?token=$token";
+                    // $resetLink = "http://foldername/forget_password.php?token=$token";
+                    $resetLink = "http://finalEmis/forget_password.php?token=$token";
                     $messageContent = "Click this link to reset your password (valid for 1 hour): <a href='$resetLink'>$resetLink</a>";
                     sendEmail($email, "Reset Your Password", $messageContent);
 

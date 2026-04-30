@@ -18,20 +18,12 @@ if (!$user_cnic) {
     die("Session error: CNIC missing");
 }
 
-/* ======================
-   DB CONNECTION (using mysqli)
-====================== */
-$conn = mysqli_connect($servername, $username, $password, $dbname);
-if (!$conn) {
-    die("Database connection failed: " . mysqli_connect_error());
-}
-$conn->set_charset("utf8mb4");
 
 /* ======================
    FETCH TEACHER
 ====================== */
 $stmt = $conn->prepare("
-    SELECT teacher_id, teacher_name 
+    SELECT * 
     FROM teachers 
     WHERE cnic = ? 
     LIMIT 1
@@ -269,8 +261,8 @@ $stmt->close();
         <!-- Recent Materials Table -->
         <div class="card mb-4">
             <h6>Recent Study Materials</h6>
-            <table class="table">
-                <thead>
+            <table class="table text-center">
+                <thead class>
                     <tr>
                         <th>Title</th>
                         <th>Class</th>

@@ -22,7 +22,18 @@ $studentResult = $stmtStudent->get_result();
 
 if ($studentResult->num_rows === 0) die("Student not found.");
 $student = $studentResult->fetch_assoc();
-
+if($student["status"]=="banned"){
+   session_destroy();
+    die("<script>alert('You are banned form accessing your account.');</script>");
+    header("Location: ../login.php");
+    exit();
+}
+if($student["status"]=="suspended"){
+   session_destroy();
+    die("<script>alert('You are suspended form accessing your account.');</script>");
+    header("Location: ../login.php");
+    exit();
+}
 // Today's classes
 $today = date('l'); // e.g., Monday, Tuesday
 $stmtClasses = $conn->prepare("
@@ -73,7 +84,9 @@ $materials = $stmtMaterials->get_result();
     <link rel="stylesheet" href="../assets/sidebar.css">
 </head>
 <body>
+    <?php if($student["status"]=="admitted"):?>
   <div class="container">
+      
     <?php include '../partials/sidebar.php'; ?>
 
     <main class="main">
@@ -139,6 +152,14 @@ $materials = $stmtMaterials->get_result();
         </ul>
       </div>
     </main>
-  </div>
+     </div>
+    	<?php else:?>
+      		<h1 style="Margin:200px"> You are not Admitted until now!</h2>
+  
+        <?php 
+    session_destroy();
+    header("Refresh: 5");
+    endif; ?>
+  
 </body>
 </html>

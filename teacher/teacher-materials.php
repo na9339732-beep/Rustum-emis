@@ -25,6 +25,17 @@ $result = $conn->query($sql);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../assets/styles.css">
     <link rel="stylesheet" href="../assets/sidebar.css">
+    <style>
+      .btn-action {
+        font-size: 0.9rem;
+        padding: 8px 8px;
+        border-radius: 4px;
+        color: #ccc;      
+        text-decoration: none;
+        background: linear-gradient(90deg, #3a6ff8, #6a2ff8);
+        margin-right: 4px;           
+      }
+    </style>
 </head>
 <body>
   <div class="container">
@@ -33,7 +44,6 @@ $result = $conn->query($sql);
       <div class="header">
         <div style="display:flex;gap:12px;align-items:center">
           <div style="font-size:20px;font-weight:700">Study Materials</div>
-          <div style="color:var(--muted)"> / Dynamic</div>
         </div>
       </div>
 
@@ -52,7 +62,7 @@ $result = $conn->query($sql);
                 <th>Teacher</th>
                 <th>Type</th>
                 <th>Date</th>
-                <th>Download</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -65,9 +75,15 @@ $result = $conn->query($sql);
                 <td><?= strtoupper($row['file_type']) ?></td>
                 <td><?= date("Y-m-d", strtotime($row['uploaded_at'])) ?></td>
                 <td>
-                  <a href="<?= $row['file_path'] ?>" class="btn ghost" download>
+                  <a href="<?= $row['file_path'] ?>" class="btn-action " download>
                     <i class="bi bi-download"></i>
                   </a>
+                   <a href="delete_file.php?id=<?= $row['material_id'] ?>" 
+                 class="btn-action mt-1 " 
+               onclick="return confirm('Do you want to delete this file?')">
+               <i class="bi bi-trash"></i> 
+                </a>
+                
                 </td>
               </tr>
             <?php endwhile; ?>

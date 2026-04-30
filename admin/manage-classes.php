@@ -128,7 +128,7 @@ $sessions = $conn->query("SELECT session_id, session_name FROM sessions WHERE st
                                     <th>#</th>
                                     <th>Class Name</th>
                                     <th>Short</th>
-                                    <th>Session</th>
+                                    <th>Batch</th>
                                     <th>Status</th>
                                     <th width="220">Actions</th>
                                 </tr>
@@ -151,7 +151,7 @@ $sessions = $conn->query("SELECT session_id, session_name FROM sessions WHERE st
                                 <td>
 
                                 <?php if ($row['session_status'] === 'completed'): ?>
-                                    <span class="badge bg-secondary">Session Completed</span>
+                                    <span class="badge bg-secondary">Batch Completed</span>
                                 <?php else: ?>
                                 <button class="btn btn-sm btn-info"
                                 onclick="editClass(
@@ -208,7 +208,7 @@ $sessions = $conn->query("SELECT session_id, session_name FROM sessions WHERE st
                     </div>
 
                     <div class="mb-3">
-                        <label>Session</label>
+                        <label>Batch</label>
                         <select name="session_id" class="form-select" required>
                             <option value="">Select</option>
                             <?php while($s=$sessions->fetch_assoc()): ?>

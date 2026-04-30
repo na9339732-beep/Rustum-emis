@@ -1,4 +1,16 @@
- .main {
+        :root {
+        --bg: #f6f8fb;
+        --card: #ffffff;
+        --muted: #667085;
+        --accent: #3A6FF8;
+        --accent-2: #6A2FF8;
+        --glass: rgba(255, 255, 255, 0.65);
+        --radius: 16px;
+        --shadow: 0 10px 25px rgba(18, 38, 63, 0.08);
+        --glass-shadow: 0 12px 35px rgba(34, 41, 61, 0.08);
+        --transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        }    
+        .main {
             padding: 20px;
         }
         .card {
@@ -52,4 +64,20 @@
         }
         .btn:hover {
             background: #0b5ed7;
+        }
+		.edit-button{
+			padding: 8px 20px;
+            font-size: 13px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            color:white;
+            text-align:center;
+            border-radius:40px;
+        }
+		.delete-button{
+			background:#dc3545;
+            padding: 8px 10px;
+            font-size: 13px;
+            text-align:center;
+            border-radius:40px;
+            color:white;
         }

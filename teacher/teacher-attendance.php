@@ -9,7 +9,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Teacher') {
     exit;
 }
 
-
 // Get CNIC of logged-in user
 $user_cnic = $_SESSION['cnic'];
 
@@ -22,6 +21,7 @@ $result = $stmt->get_result();
 if ($result->num_rows > 0) {
     $teacher = $result->fetch_assoc();
     $teacher_id = $teacher['teacher_id'];
+    $_SESSION['teacher_id'] = $teacher_id;
 } else {
     echo "No teacher found with CNIC: " . htmlspecialchars($user_cnic);
 }
@@ -29,9 +29,10 @@ if ($result->num_rows > 0) {
 // Fetch classes assigned to this teacher
 $classes = [];
 $stmt = $conn->prepare("
-    SELECT DISTINCT c.class_id, c.class_name, c.class_short 
+    SELECT DISTINCT c.class_id, c.class_name, c.class_short, s.session_name 
     FROM classes c 
     JOIN teacher_classes tc ON c.class_id = tc.class_id 
+    Join sessions s on c.session_id= s.session_id
     WHERE tc.teacher_id = ?
     ORDER BY c.class_name
 ");
@@ -47,11 +48,14 @@ $stmt->close();
 $class_id = intval($_GET['class_id'] ?? 0);
 $students = [];
 $selected_class_name = '';
+$selected_session_name = '';
+
 
 if ($class_id) {
     foreach ($classes as $c) {
         if ($c['class_id'] == $class_id) {
             $selected_class_name = $c['class_name'] . " (" . $c['class_short'] . ")";
+            $selected_session_name = $c['session_name'];
             break;
         }
     }
@@ -60,7 +64,7 @@ if ($class_id) {
     $stmt = $conn->prepare("
         SELECT student_id, student_name 
         FROM students 
-        WHERE class_id = ? AND status = 'registered' 
+        WHERE class_id = ? AND status = 'admitted' 
         ORDER BY student_name
     ");
     $stmt->bind_param("i", $class_id);
@@ -116,7 +120,7 @@ if ($class_id) {
         <div class="header mb-4">
             <div style="display:flex;gap:12px;align-items:center">
                 <div style="font-size:20px;font-weight:700">Track Attendance</div>
-                <div style="color:var(--muted)"> / Teacher Portal</div>
+
             </div>
         </div>
 
@@ -129,11 +133,11 @@ if ($class_id) {
                         <option value="">-- Choose Class --</option>
                         <?php foreach ($classes as $c): ?>
                             <option value="<?= $c['class_id'] ?>" <?= $class_id == $c['class_id'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($c['class_name']) ?> (<?= $c['class_short'] ?>)
+                                <?= htmlspecialchars($c['class_name']) ?> (<?= $c['class_short'] ?>) - <?= htmlspecialchars($c['session_name']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
-                </form>
+                        </form>
             </div>
         </div>
 

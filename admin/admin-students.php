@@ -90,8 +90,12 @@ $classes = $conn->query("SELECT class_id, class_name FROM classes ORDER BY class
 <head>
 <meta charset="UTF-8">
 <title>Manage Students</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="../assets/sidebar.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../assets/admin-dashboard.css">
 
 <style>
 table { width:100%; margin-top:20px; }
@@ -100,8 +104,9 @@ th, td { padding:10px; border:1px solid #ddd; }
 </head>
 
 <body>
-<div class="container mt-4">
-
+<div class="container">
+    <?php include '../partials/sidebar.php'; ?>
+<main class="main">
 <h2>Manage Students</h2>
 
 <!-- FILTER BAR -->
@@ -155,7 +160,7 @@ th, td { padding:10px; border:1px solid #ddd; }
             <th>Father Name</th>
             <th>Class</th>
             <th>Status</th>
-            <th>Action</th>
+            <th>Actions</th>
         </tr>
     </thead>
 
@@ -183,6 +188,9 @@ th, td { padding:10px; border:1px solid #ddd; }
                     <a href="edit-student.php?id=<?= $student['student_id'] ?>" class="btn btn-sm btn-warning">
                         Edit
                     </a>
+                    <a href="view-results.php?student_id=<?= $student['student_id'] ?>" class="btn btn-sm btn-info">
+                        View Results
+                    </a>
                 </td>
             </tr>
             <?php endforeach; ?>
@@ -193,7 +201,7 @@ th, td { padding:10px; border:1px solid #ddd; }
         <?php endif; ?>
     </tbody>
 </table>
-
+</main>
 </div>
 </body>
 </html>

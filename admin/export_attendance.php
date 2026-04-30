@@ -7,17 +7,31 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin') {
     die("Unauthorized access");
 }
 
-// Tell browser it's a CSV file
+
 header('Content-Type: text/csv; charset=utf-8');
 header('Content-Disposition: attachment; filename=attendance_export.csv');
 
-// Output to browser
 $output = fopen('php://output', 'w');
 
-// CSV Header
 fputcsv($output, ['Date', 'Class', 'Present', 'Absent', 'Leave']);
+$where = "";
+$where = [];
 
-// SQL
+if (!empty($_GET['from_date'])) {
+    $from = mysqli_real_escape_string($conn, $_GET['from_date']);
+    $where[] = "a.attendance_date >= '$from'";
+}
+
+if (!empty($_GET['to_date'])) {
+    $to = mysqli_real_escape_string($conn, $_GET['to_date']);
+    $where[] = "a.attendance_date <= '$to'";
+}
+
+$whereSQL = "";
+if (!empty($where)) {
+    $whereSQL = "WHERE " . implode(" AND ", $where);
+}
+
 $sql = "
     SELECT 
         a.attendance_date,
@@ -27,6 +41,7 @@ $sql = "
         SUM(a.status = 'Leave') AS leave_count
     FROM attendance a
     JOIN classes c ON c.class_id = a.class_id
+    $whereSQL
     GROUP BY a.attendance_date, c.class_name
     ORDER BY a.attendance_date DESC
 ";

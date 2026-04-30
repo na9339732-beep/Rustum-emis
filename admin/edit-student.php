@@ -144,7 +144,7 @@ $groups = $conn->query("SELECT group_id, group_name FROM student_groups ORDER BY
             </div>
             <div>
                 <label>State</label>
-                <input type="text" class="form-control" name="state" value="<?= htmlspecialchars($student['state']) ?>">
+                <input type="text" class="form-control" name="state" value="<?php if(!empty($student['state'])) { echo $student['state']; } ?>">
             </div>
             <div style="margin-top:10px;">
                 <button type="submit" class="btn">Update Student</button>
