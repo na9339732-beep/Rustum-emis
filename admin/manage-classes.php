@@ -86,6 +86,30 @@ $classes = $conn->query("
 ");
 
 $sessions = $conn->query("SELECT session_id, session_name FROM sessions WHERE status='active'");
+
+// Pagination setup
+$limit = 10;
+$page = $_GET['page'] ?? 1;
+$page = max(1, (int)$page);
+$offset = ($page - 1) * $limit;
+
+// Get total count
+$total_query = "SELECT COUNT(*) as total FROM classes c
+                LEFT JOIN sessions s ON c.session_id = s.session_id
+                WHERE c.class_status != 'deleted'";
+$total_result = $conn->query($total_query);
+$total = $total_result->fetch_assoc()['total'];
+$total_pages = ceil($total / $limit);
+
+// Fetch paginated results
+$classes_paginated = $conn->query("
+    SELECT c.*, s.session_name, s.status AS session_status
+    FROM classes c
+    LEFT JOIN sessions s ON c.session_id = s.session_id
+    WHERE c.class_status != 'deleted'
+    ORDER BY c.class_id DESC
+    LIMIT $limit OFFSET $offset
+");
 ?>
 
 <!doctype html>
@@ -135,7 +159,7 @@ $sessions = $conn->query("SELECT session_id, session_name FROM sessions WHERE st
                             </thead>
 
                             <tbody>
-                                <?php $i=1; while($row=$classes->fetch_assoc()): ?>
+                                <?php $i=1; while($row=$classes_paginated->fetch_assoc()): ?>
                                 <tr>
                                     <td><?= $i++ ?></td>
                                     <td><?= htmlspecialchars($row['class_name']) ?></td>
@@ -176,6 +200,64 @@ $sessions = $conn->query("SELECT session_id, session_name FROM sessions WHERE st
                                 <?php endwhile; ?>
                             </tbody>
                         </table>
+
+                        <!-- Pagination -->
+                        <?php if ($total_pages > 1): ?>
+                        <nav aria-label="Class pagination" class="mt-4">
+                            <ul class="pagination justify-content-center">
+                                <!-- Previous button -->
+                                <?php if ($page > 1): ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<?= $page - 1 ?>">
+                                        Previous
+                                    </a>
+                                </li>
+                                <?php endif; ?>
+
+                                <!-- Page numbers -->
+                                <?php
+                                $start_page = max(1, $page - 2);
+                                $end_page = min($total_pages, $page + 2);
+                                
+                                if ($start_page > 1): ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1">1</a>
+                                </li>
+                                <?php if ($start_page > 2): ?>
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                                <?php endif; ?>
+                                <?php endif; ?>
+
+                                <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
+                                <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                                    <a class="page-link" href="?page=<?= $i ?>">
+                                        <?= $i ?>
+                                    </a>
+                                </li>
+                                <?php endfor; ?>
+
+                                <?php if ($end_page < $total_pages): ?>
+                                <?php if ($end_page < $total_pages - 1): ?>
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                                <?php endif; ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<?= $total_pages ?>">
+                                        <?= $total_pages ?>
+                                    </a>
+                                </li>
+                                <?php endif; ?>
+
+                                <!-- Next button -->
+                                <?php if ($page < $total_pages): ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<?= $page + 1 ?>">
+                                        Next
+                                    </a>
+                                </li>
+                                <?php endif; ?>
+                            </ul>
+                        </nav>
+                        <?php endif; ?>
 
                     </div>
                 </div>

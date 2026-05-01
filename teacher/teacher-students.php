@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 include '../config/db.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Teacher') {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Teacher' || $_SESSION['job_status'] !== 'Active') {
     header("Location: ../login.php");
     exit;
 }
@@ -61,16 +61,35 @@ if ($class_id) {
     /* ============================
         FETCH STUDENTS OF CLASS
     ============================= */
+    // Pagination setup
+    $limit = 10;
+    $page = $_GET['page'] ?? 1;
+    $page = max(1, (int)$page);
+    $offset = ($page - 1) * $limit;
+
+    // Get total count
+    $count_stmt = $conn->prepare("
+        SELECT COUNT(*) as total
+        FROM students
+        WHERE class_id = ? AND status = 'admitted'
+    ");
+    $count_stmt->bind_param("i", $class_id);
+    $count_stmt->execute();
+    $total = $count_stmt->get_result()->fetch_assoc()['total'];
+    $total_pages = ceil($total / $limit);
+    $count_stmt->close();
+
     $stmt = $conn->prepare("
         SELECT *
         FROM students
         WHERE class_id = ? AND status = 'admitted'
         ORDER BY student_name
+        LIMIT ? OFFSET ?
     ");
     if (!$stmt) {
         die("Prepare failed: " . $conn->error);
     }
-    $stmt->bind_param("i", $class_id);
+    $stmt->bind_param("iii", $class_id, $limit, $offset);
     $stmt->execute();
     $res = $stmt->get_result();
     while ($row = $res->fetch_assoc()) $students[] = $row;
@@ -166,6 +185,64 @@ if ($class_id) {
 
         </tbody>
       </table>
+
+      <!-- Pagination -->
+      <?php if ($total_pages > 1): ?>
+      <nav aria-label="Student pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <!-- Previous button -->
+            <?php if ($page > 1): ?>
+            <li class="page-item">
+                <a class="page-link" href="?class_id=<?= $class_id ?>&page=<?= $page - 1 ?>">
+                    Previous
+                </a>
+            </li>
+            <?php endif; ?>
+
+            <!-- Page numbers -->
+            <?php
+            $start_page = max(1, $page - 2);
+            $end_page = min($total_pages, $page + 2);
+            
+            if ($start_page > 1): ?>
+            <li class="page-item">
+                <a class="page-link" href="?class_id=<?= $class_id ?>&page=1">1</a>
+            </li>
+            <?php if ($start_page > 2): ?>
+            <li class="page-item disabled"><span class="page-link">...</span></li>
+            <?php endif; ?>
+            <?php endif; ?>
+
+            <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
+            <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                <a class="page-link" href="?class_id=<?= $class_id ?>&page=<?= $i ?>">
+                    <?= $i ?>
+                </a>
+            </li>
+            <?php endfor; ?>
+
+            <?php if ($end_page < $total_pages): ?>
+            <?php if ($end_page < $total_pages - 1): ?>
+            <li class="page-item disabled"><span class="page-link">...</span></li>
+            <?php endif; ?>
+            <li class="page-item">
+                <a class="page-link" href="?class_id=<?= $class_id ?>&page=<?= $total_pages ?>">
+                    <?= $total_pages ?>
+                </a>
+            </li>
+            <?php endif; ?>
+
+            <!-- Next button -->
+            <?php if ($page < $total_pages): ?>
+            <li class="page-item">
+                <a class="page-link" href="?class_id=<?= $class_id ?>&page=<?= $page + 1 ?>">
+                    Next
+                </a>
+            </li>
+            <?php endif; ?>
+        </ul>
+      </nav>
+      <?php endif; ?>
     </div>
     <?php endif; ?>
 

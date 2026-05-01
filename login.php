@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
-
+    
     if ($result->num_rows == 1) {
         $user = $result->fetch_assoc();
 
@@ -29,14 +29,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($user['email_verified'] != 1) {
             $loginError = "Please verify your email before logging in.";
             $showResendButton = true;
-            $userEmailToResend = $user['email'];
+            $userEmailToResend = $user['email'];  
         }
-        if ($user['status'] != "active") {
-            $loginError = "Your account is not active.";
-        }  
+
         // Verify password
         else if (password_verify($password, $user['password'])) {
-
+            if ($user['status'] != "active") {
+                $loginError = "Your account is not active.";
+            }  
             // store user in session
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['username'] = $user['username'];
@@ -85,7 +85,7 @@ if (isset($_POST['resend_email'])) {
     $stmt->execute();
     $stmt->close();
 
-    $verificationLink = "http://finalEmis/verify.php?token=$token";
+    $verificationLink = "http://localhost/finalemis/verify.php?token=$token";
     $messageContent = "Please verify your email by clicking this link: <a href='$verificationLink'>$verificationLink</a>";
     sendEmail($emailToResend, "Verify Your Email", $messageContent);
 

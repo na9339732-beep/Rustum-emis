@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 11, 2026 at 08:29 PM
+-- Generation Time: May 01, 2026 at 01:00 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -38,23 +38,12 @@ CREATE TABLE `attendance` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `books`
+-- Dumping data for table `attendance`
 --
 
-CREATE TABLE `books` (
-  `book_id` int(11) NOT NULL,
-  `group_id` int(11) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `code` varchar(50) NOT NULL,
-  `author` varchar(255) NOT NULL,
-  `publisher` varchar(255) NOT NULL,
-  `level` enum('first year','second year') NOT NULL,
-  `status` enum('active','inactive') DEFAULT 'active',
-  `importance` enum('optional','compulsory') NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `attendance` (`attendance_id`, `student_id`, `class_id`, `teacher_id`, `attendance_date`, `status`, `created_at`, `updated_at`) VALUES
+(27, 21, 23, 29, '2026-04-30', 'Present', '2026-04-30 14:22:48', '2026-04-30 14:22:48');
 
 -- --------------------------------------------------------
 
@@ -75,10 +64,8 @@ CREATE TABLE `classes` (
 --
 
 INSERT INTO `classes` (`class_id`, `class_name`, `class_short`, `class_status`, `session_id`) VALUES
-(8, '09', 'ix', 'active', 7),
-(9, '10th', 'x', 'active', 7),
-(10, '11th grade', '11th', 'active', 8),
-(11, '12th grade', '12th', 'active', 8);
+(23, '11th grade', 'xi', 'active', 16),
+(24, '12th grade', 'xii', 'active', 16);
 
 -- --------------------------------------------------------
 
@@ -122,7 +109,8 @@ CREATE TABLE `exams` (
 --
 
 INSERT INTO `exams` (`exam_id`, `exam_title`, `class_id`, `start_date`, `end_date`, `description`, `created_at`) VALUES
-(6, 'mid', 8, '2026-01-01', '2026-01-31', '', '2026-04-11 13:23:01');
+(12, 'Mid term', 23, '2020-06-01', '2026-06-30', '', '2026-04-30 11:51:13'),
+(13, 'mid term', 24, '2026-05-01', '2026-05-30', '', '2026-04-30 14:24:43');
 
 -- --------------------------------------------------------
 
@@ -146,7 +134,12 @@ CREATE TABLE `exam_routine` (
 --
 
 INSERT INTO `exam_routine` (`id`, `exam_id`, `subject_id`, `exam_date`, `start_time`, `end_time`, `created_at`, `updated_at`) VALUES
-(9, 6, 9, '2026-01-01', '09:00:00', '11:00:00', '2026-04-11 13:24:02', '2026-04-11 13:24:02');
+(20, 12, 24, '2020-06-01', '09:00:00', '10:00:00', '2026-04-30 11:52:48', '2026-04-30 11:52:48'),
+(21, 12, 24, '2020-06-03', '09:00:00', '11:00:00', '2026-04-30 13:06:59', '2026-04-30 13:06:59'),
+(22, 12, 25, '2020-06-07', '09:00:00', '11:00:00', '2026-04-30 13:07:32', '2026-04-30 13:07:32'),
+(23, 12, 24, '2026-06-07', '09:00:00', '11:00:00', '2026-04-30 14:05:59', '2026-04-30 14:05:59'),
+(24, 12, 24, '2026-02-01', '09:00:00', '11:00:00', '2026-04-30 14:07:23', '2026-04-30 14:07:23'),
+(25, 12, 24, '2026-06-07', '09:00:00', '11:00:00', '2026-04-30 14:09:57', '2026-04-30 14:09:57');
 
 -- --------------------------------------------------------
 
@@ -205,6 +198,14 @@ CREATE TABLE `ptm_bookings` (
   `remarks` varchar(500) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `ptm_bookings`
+--
+
+INSERT INTO `ptm_bookings` (`booking_id`, `child_id`, `teacher_id`, `meeting_date`, `booked_by`, `created_at`, `status`, `availability_id`, `remarks`) VALUES
+(14, 21, 29, '2026-05-03', 109, '2026-04-30 18:52:26', 'Cancelled', NULL, NULL),
+(15, 21, 29, '2026-05-06', 109, '2026-04-30 18:58:46', 'Confirmed', 14, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -215,7 +216,7 @@ CREATE TABLE `results` (
   `id` int(11) NOT NULL,
   `student_id` int(11) NOT NULL,
   `subject` varchar(255) NOT NULL,
-  `marks` int(11) NOT NULL,
+  `marks` text NOT NULL,
   `grade` varchar(5) NOT NULL,
   `exam_term` varchar(50) DEFAULT 'Final',
   `session_id` int(11) DEFAULT NULL,
@@ -241,9 +242,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`session_id`, `session_name`, `starting_date`, `status`, `remarks`) VALUES
-(7, '2020- 2022', '2020-01-01', 'active', ''),
-(8, '2023-2025', '2022-01-01', 'active', ''),
-(9, '2025-2027', '2023-01-01', 'active', '');
+(16, '2020 -2022', '2020-01-01', 'active', '');
 
 -- --------------------------------------------------------
 
@@ -273,6 +272,14 @@ CREATE TABLE `students` (
   `group_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `students`
+--
+
+INSERT INTO `students` (`student_id`, `student_name`, `father_name`, `email`, `phone`, `address`, `gender`, `dob`, `class_id`, `registration_date`, `status`, `user_id`, `city`, `state`, `photo`, `student_cnic`, `father_cnic`, `session_id`, `group_id`) VALUES
+(21, 'Rustam Ali', 'Mansab dar', 'ra7527753@gmail.com', '03315609564', 'RANGE ROAD', 'Male', '2000-05-01', 23, '2026-04-30 13:40:02', 'admitted', 108, '0', '', NULL, '3740514536155', '3740514335177', 16, NULL),
+(26, 'Hamza', 'Saeed', 'hamza@gmail.com', '03315609667', 'range road', 'Male', '2004-01-02', 24, '2026-04-30 17:24:06', 'admitted', 122, '0', '', NULL, '3740514536086', '3740514637160', 16, 11);
+
 -- --------------------------------------------------------
 
 --
@@ -286,6 +293,14 @@ CREATE TABLE `student_groups` (
   `status` enum('Active','Inactive') DEFAULT 'Active',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `student_groups`
+--
+
+INSERT INTO `student_groups` (`group_id`, `group_name`, `group_short`, `status`, `created_at`) VALUES
+(10, 'ICS', 'ICS', 'Active', '2026-04-30 14:55:13'),
+(11, 'Pre Engineering', 'PE', 'Active', '2026-04-30 14:55:36');
 
 -- --------------------------------------------------------
 
@@ -325,7 +340,8 @@ CREATE TABLE `subjects` (
 --
 
 INSERT INTO `subjects` (`subject_id`, `subject_name`, `class_id`, `teacher_id`, `status`, `created_at`, `updated_at`) VALUES
-(9, 'math', 8, NULL, 'active', '2026-04-11 13:24:02', '2026-04-11 13:24:02');
+(24, 'math', 23, NULL, 'active', '2026-04-30 11:52:48', '2026-04-30 11:52:48'),
+(25, 'english', 23, 29, 'active', '2026-04-30 13:05:29', '2026-04-30 13:05:29');
 
 -- --------------------------------------------------------
 
@@ -354,9 +370,8 @@ CREATE TABLE `teachers` (
 --
 
 INSERT INTO `teachers` (`teacher_id`, `teacher_name`, `cnic`, `email`, `photo`, `designation`, `highest_qualification`, `bps`, `subject`, `job_nature`, `joining`, `job_status`, `department_id`) VALUES
-(14, 'nouman', '3740514536155', 'nouman@gmail.com', 'teacher_69da48a50dee3.jpg', 'teacher', 'master', 16, 'math', 'Permanent', '2026-01-01', 'Active', 1),
-(15, 'usman', '3740514536950', 'usman@gmail.com', 'teacher_69da48ec45ae7.jpg', 'teacher', 'master', 12, 'english', 'Permanent', '2026-01-01', 'Active', 3),
-(16, 'agha', '3740514536144', 'agha@gmail.com', 'teacher_69da4944d11a9.jpg', 'teacher', 'master', 12, 'math', 'Permanent', '2026-01-01', 'Active', 4);
+(29, 'Ahmed Khan', '3740514536155', 'ahmed@emis.com', 'teacher_69f2996979297.jpg', 'teacher', 'Master', 34, 'Math', 'Permanent', '2026-01-01', 'Active', 1),
+(30, 'Ahmed2', '1310131446378', 'Ahmed@gmail.com', 'teacher_69f3954190b90.jpg', 'lecturer', 'ms', 17, 'computer', 'Permanent', '2026-04-30', 'Active', 1);
 
 -- --------------------------------------------------------
 
@@ -373,6 +388,13 @@ CREATE TABLE `teacher_availability` (
   `status` enum('Available','Booked','Cancelled') DEFAULT 'Available',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `teacher_availability`
+--
+
+INSERT INTO `teacher_availability` (`availability_id`, `teacher_id`, `meeting_date`, `start_time`, `end_time`, `status`, `created_at`) VALUES
+(14, 29, '2026-05-06', '09:00:00', '10:00:00', 'Booked', '2026-04-30 13:55:55');
 
 -- --------------------------------------------------------
 
@@ -397,9 +419,10 @@ CREATE TABLE `teacher_classes` (
 --
 
 INSERT INTO `teacher_classes` (`id`, `class_id`, `teacher_id`, `session_id`, `status`, `subject`, `day`, `start_time`, `end_time`) VALUES
-(39, 8, 16, 8, 'Active', 'math', 'Monday', '09:00:00', '10:00:00'),
-(40, 8, 16, 8, 'Active', 'math', 'Tuesday', '09:00:00', '10:00:00'),
-(41, 8, 16, 8, 'Active', 'math', 'Wednesday', '09:00:00', '10:00:00');
+(72, 23, 29, 16, 'Active', 'english', 'Monday', '09:00:00', '10:00:00'),
+(73, 23, 29, 16, 'Active', 'english', 'Tuesday', '09:00:00', '10:00:00'),
+(74, 23, 29, 16, 'Active', 'english', 'Wednesday', '09:00:00', '10:00:00'),
+(75, 23, 29, 16, 'Active', 'english', 'Thursday', '09:00:00', '10:00:00');
 
 -- --------------------------------------------------------
 
@@ -427,10 +450,14 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `email`, `cnic`, `password`, `role`, `creation_date`, `status`, `verification_token`, `email_verified`, `reset_token`, `reset_expires`) VALUES
-(1, 'Hello Dello', 'hellodello@gmail.com', NULL, '$2y$10$oRibR8Gz9UU3k0GufmJ9b.mnA/6TkEQEq7bEMFrY/xgwTf08m2ubO', 'Admin', '2025-12-09 12:37:17', 'active', 'bdc0acc681c836a62d828b19fd546c3a', 1, 'b4c19111a37e090c17c3546ae36969a5', '2025-12-28 13:04:29'),
-(78, 'nouman@gmail.com', 'nouman@gmail.com', '3740514536155', '$2y$10$7LJrJ.3477pesCsAx8xpeuGs9F6Yk9ydl7cW6ogdi2WSu5OGGOXGK', 'Teacher', '2026-04-11 13:12:05', 'active', NULL, 0, NULL, NULL),
-(79, 'usman@gmail.com', 'usman@gmail.com', '3740514536950', '$2y$10$H5x1hI5ybc1kKleY3OPb9urZXS5m3On63aWqq38JPDY6wiRXupPNC', 'Teacher', '2026-04-11 13:13:16', 'active', NULL, 0, NULL, NULL),
-(80, 'agha@gmail.com', 'agha@gmail.com', '3740514536144', '$2y$10$16aPoHM6ojALo59hK5QWWeykMHEvwa8uWk07gu5RH/l1lO5EjMdL.', 'Teacher', '2026-04-11 13:14:44', 'active', NULL, 0, NULL, NULL);
+(1, 'Hello Dello', 'hellodello@gmail.com', NULL, '$2y$10$EPymCQZQNksEB6GVZ.oXU.68IbLQkBJcoKP4DSXG8Kh776w5iiBZC', 'Admin', '2025-12-09 20:37:17', 'active', 'bdc0acc681c836a62d828b19fd546c3a', 1, NULL, NULL),
+(107, 'ahmed@emis.com', 'ahmed@emis.com', '3740514536155', '$2y$10$K4eP/jiFhciC1igiJe9iL.tn7u5IO.vjdTDHQst50e.u1HPkIiGO2', 'Teacher', '2026-04-29 23:51:05', 'active', NULL, 1, NULL, NULL),
+(108, 'Rustam Ali', 'ra7527753@gmail.com', '3740514536155', '$2y$10$MMivs0GIMPit6oo.ZXnFM.VWkEhAvLTeWZZdNuU51bfaf9uO/9gCK', 'Student', '2026-04-30 13:38:23', 'active', '99a74f1fca375f8fc78ae01cb6fe2861', 1, NULL, NULL),
+(109, 'Mansabdar', 'ra7524733@gmail.com', '3740514335177', '$2y$10$TbcDoom5WlPQrGF1oWY3meHaR/9tsfsP3wpJm9LksNcCyPDu99OCa', 'Parents', '2026-04-30 13:50:32', 'active', '739744a882f50cebf019d2033a274cf5', 0, NULL, NULL),
+(111, 'test', 'test@gmail.com', '', '$2y$10$a3xXNoWsB.9D5WWzYowRvOMUAqTUqPURxVmBrNgxlxbBHQrG5P1sG', 'Student', '2026-04-30 14:40:20', 'inactive', 'f7db9fe7fffa6c34bf85b2ef6d3b4ae9', 0, NULL, NULL),
+(122, 'Hamza', 'hamza@gmail.com', '3740514536086', '$2y$10$bHSRv64amm2u9C5YM/KV5ee8d9sNLNfHgwNpwesbVUsiJtKT4R9UK', 'Student', '2026-04-30 17:22:17', 'active', '4f4f68286312713090b46737d38a0291', 1, NULL, NULL),
+(124, 'Rustam', 'ra7517733@gmail.com', '', '$2y$10$Kshm80YIVih0vjqX4KdkA.fpt4qJjt3Qwd3oUX/IWBAmUQkJyQ5Kq', 'Student', '2026-04-30 17:42:50', 'active', '56468db60c31117487ea06b1492606cf', 0, NULL, NULL),
+(125, 'Ahmed2', 'Ahmed@gmail.com', '1310131446378', '$2y$10$CZJFWtBZt3zL2wsV9mJ3XuaqJmVAp6ghNeFIW3VPCRj3DAlMXz3om', 'Teacher', '2026-04-30 17:45:37', 'active', NULL, 0, NULL, NULL);
 
 --
 -- Indexes for dumped tables
@@ -444,13 +471,6 @@ ALTER TABLE `attendance`
   ADD KEY `student_id` (`student_id`),
   ADD KEY `class_id` (`class_id`),
   ADD KEY `teacher_id` (`teacher_id`);
-
---
--- Indexes for table `books`
---
-ALTER TABLE `books`
-  ADD PRIMARY KEY (`book_id`),
-  ADD KEY `group_id` (`group_id`);
 
 --
 -- Indexes for table `classes`
@@ -596,19 +616,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `attendance_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `books`
---
-ALTER TABLE `books`
-  MODIFY `book_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `attendance_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `classes`
 --
 ALTER TABLE `classes`
-  MODIFY `class_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `class_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `departments`
@@ -620,13 +634,13 @@ ALTER TABLE `departments`
 -- AUTO_INCREMENT for table `exams`
 --
 ALTER TABLE `exams`
-  MODIFY `exam_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `exam_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `exam_routine`
 --
 ALTER TABLE `exam_routine`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `groups`
@@ -638,7 +652,7 @@ ALTER TABLE `groups`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `notification_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `notification_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `password_resets`
@@ -650,67 +664,67 @@ ALTER TABLE `password_resets`
 -- AUTO_INCREMENT for table `ptm_bookings`
 --
 ALTER TABLE `ptm_bookings`
-  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `results`
 --
 ALTER TABLE `results`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `sessions`
 --
 ALTER TABLE `sessions`
-  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `student_groups`
 --
 ALTER TABLE `student_groups`
-  MODIFY `group_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `group_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `study_materials`
 --
 ALTER TABLE `study_materials`
-  MODIFY `material_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `material_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `subjects`
 --
 ALTER TABLE `subjects`
-  MODIFY `subject_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `subject_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `teachers`
 --
 ALTER TABLE `teachers`
-  MODIFY `teacher_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `teacher_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `teacher_availability`
 --
 ALTER TABLE `teacher_availability`
-  MODIFY `availability_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `availability_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `teacher_classes`
 --
 ALTER TABLE `teacher_classes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
 
 --
 -- Constraints for dumped tables
@@ -723,12 +737,6 @@ ALTER TABLE `attendance`
   ADD CONSTRAINT `attendance_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `students` (`student_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `attendance_ibfk_2` FOREIGN KEY (`class_id`) REFERENCES `classes` (`class_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `attendance_ibfk_3` FOREIGN KEY (`teacher_id`) REFERENCES `teachers` (`teacher_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `books`
---
-ALTER TABLE `books`
-  ADD CONSTRAINT `books_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `classes`

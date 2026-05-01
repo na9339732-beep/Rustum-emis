@@ -43,7 +43,7 @@ if (isset($_GET['delete'], $_GET['csrf']) && $_GET['csrf'] === $csrf) {
     $chk = $conn->query("
         SELECT COUNT(*) AS total 
         FROM classes 
-        WHERE session_id = $id
+        WHERE session_id = $id and class_status = 'active'
     ")->fetch_assoc();
 
     if ($chk['total'] > 0) {
@@ -86,6 +86,26 @@ $sessions = $conn->query("
     SELECT * 
     FROM sessions 
     ORDER BY starting_date DESC
+");
+
+// Pagination setup
+$limit = 10;
+$page = $_GET['page'] ?? 1;
+$page = max(1, (int)$page);
+$offset = ($page - 1) * $limit;
+
+// Get total count
+$total_query = "SELECT COUNT(*) as total FROM sessions";
+$total_result = $conn->query($total_query);
+$total = $total_result->fetch_assoc()['total'];
+$total_pages = ceil($total / $limit);
+
+// Fetch paginated results
+$sessions_paginated = $conn->query("
+    SELECT * 
+    FROM sessions 
+    ORDER BY starting_date DESC
+    LIMIT $limit OFFSET $offset
 ");
 ?>
 
@@ -136,7 +156,7 @@ $sessions = $conn->query("
                     </thead>
 
                     <tbody>
-                    <?php $i = 1; while ($row = $sessions->fetch_assoc()): ?>
+                    <?php $i = 1; while ($row = $sessions_paginated->fetch_assoc()): ?>
                         <tr class="<?= $row['status'] === 'active' ? 'table-success' : '' ?>">
                             <td><?= $i++ ?></td>
 
@@ -182,6 +202,64 @@ $sessions = $conn->query("
                     </tbody>
 
                 </table>
+
+                <!-- Pagination -->
+                <?php if ($total_pages > 1): ?>
+                <nav aria-label="Session pagination" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <!-- Previous button -->
+                        <?php if ($page > 1): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=<?= $page - 1 ?>">
+                                Previous
+                            </a>
+                        </li>
+                        <?php endif; ?>
+
+                        <!-- Page numbers -->
+                        <?php
+                        $start_page = max(1, $page - 2);
+                        $end_page = min($total_pages, $page + 2);
+                        
+                        if ($start_page > 1): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">1</a>
+                        </li>
+                        <?php if ($start_page > 2): ?>
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                        <?php endif; ?>
+                        <?php endif; ?>
+
+                        <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                            <a class="page-link" href="?page=<?= $i ?>">
+                                <?= $i ?>
+                            </a>
+                        </li>
+                        <?php endfor; ?>
+
+                        <?php if ($end_page < $total_pages): ?>
+                        <?php if ($end_page < $total_pages - 1): ?>
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                        <?php endif; ?>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=<?= $total_pages ?>">
+                                <?= $total_pages ?>
+                            </a>
+                        </li>
+                        <?php endif; ?>
+
+                        <!-- Next button -->
+                        <?php if ($page < $total_pages): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=<?= $page + 1 ?>">
+                                Next
+                            </a>
+                        </li>
+                        <?php endif; ?>
+                    </ul>
+                </nav>
+                <?php endif; ?>
 
             </div>
         </div>

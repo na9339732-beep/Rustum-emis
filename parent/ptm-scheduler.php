@@ -82,7 +82,7 @@ if (!$no_children) {
         FROM teacher_classes tc
         JOIN teachers t ON tc.teacher_id = t.teacher_id
         WHERE tc.class_id = ?
-          AND tc.session_id = ?
+          AND tc.session_id = ? AND t.job_status='Active'
         ORDER BY t.teacher_name, tc.subject
     ");
     if (!$stmt) {

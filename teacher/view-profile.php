@@ -5,7 +5,7 @@ require_once '../config/db.php';
 /* ======================
    AUTH CHECK
 ====================== */
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Teacher') {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Teacher' || $_SESSION['job_status'] !== 'Active') {
     header("Location: ../login.php");
     exit;
 }

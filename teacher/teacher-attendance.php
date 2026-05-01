@@ -4,11 +4,10 @@ ini_set('display_errors', 1);
 session_start();
 include '../config/db.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Teacher') {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Teacher' || $_SESSION['job_status'] !== 'Active') {
     header("Location: ../login.php");
     exit;
 }
-
 // Get CNIC of logged-in user
 $user_cnic = $_SESSION['cnic'];
 

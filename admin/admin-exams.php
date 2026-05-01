@@ -19,6 +19,31 @@ $sql = "SELECT e.exam_id, e.exam_title, e.start_date, e.end_date, c.class_name, 
         ORDER BY e.start_date ASC";
 
 $exams = mysqli_query($conn, $sql);
+
+// Pagination setup
+$limit = 10;
+$page = $_GET['page'] ?? 1;
+$page = max(1, (int)$page);
+$offset = ($page - 1) * $limit;
+
+// Get total count
+$total_query = "SELECT COUNT(*) as total FROM exams e 
+                JOIN classes c ON e.class_id = c.class_id 
+                JOIN sessions s ON c.session_id = s.session_id 
+                WHERE s.status = 'Active'";
+$total_result = mysqli_query($conn, $total_query);
+$total = mysqli_fetch_assoc($total_result)['total'];
+$total_pages = ceil($total / $limit);
+
+// Fetch paginated results
+$sql_paginated = "SELECT e.exam_id, e.exam_title, e.start_date, e.end_date, c.class_name, s.session_name
+                  FROM exams e 
+                  JOIN classes c ON e.class_id = c.class_id 
+                  JOIN sessions s ON c.session_id = s.session_id 
+                  WHERE s.status = 'Active'
+                  ORDER BY e.start_date ASC
+                  LIMIT $limit OFFSET $offset";
+$exams = mysqli_query($conn, $sql_paginated);
 ?>
 
 <!doctype html>
@@ -100,6 +125,64 @@ $exams = mysqli_query($conn, $sql);
           </tbody>
         </table>
       </div>
+
+      <!-- Pagination -->
+      <?php if ($total_pages > 1): ?>
+      <nav aria-label="Exam pagination" class="mt-4">
+          <ul class="pagination justify-content-center">
+              <!-- Previous button -->
+              <?php if ($page > 1): ?>
+              <li class="page-item">
+                  <a class="page-link" href="?page=<?= $page - 1 ?>">
+                      Previous
+                  </a>
+              </li>
+              <?php endif; ?>
+
+              <!-- Page numbers -->
+              <?php
+              $start_page = max(1, $page - 2);
+              $end_page = min($total_pages, $page + 2);
+              
+              if ($start_page > 1): ?>
+              <li class="page-item">
+                  <a class="page-link" href="?page=1">1</a>
+              </li>
+              <?php if ($start_page > 2): ?>
+              <li class="page-item disabled"><span class="page-link">...</span></li>
+              <?php endif; ?>
+              <?php endif; ?>
+
+              <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
+              <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                  <a class="page-link" href="?page=<?= $i ?>">
+                      <?= $i ?>
+                  </a>
+              </li>
+              <?php endfor; ?>
+
+              <?php if ($end_page < $total_pages): ?>
+              <?php if ($end_page < $total_pages - 1): ?>
+              <li class="page-item disabled"><span class="page-link">...</span></li>
+              <?php endif; ?>
+              <li class="page-item">
+                  <a class="page-link" href="?page=<?= $total_pages ?>">
+                      <?= $total_pages ?>
+                  </a>
+              </li>
+              <?php endif; ?>
+
+              <!-- Next button -->
+              <?php if ($page < $total_pages): ?>
+              <li class="page-item">
+                  <a class="page-link" href="?page=<?= $page + 1 ?>">
+                      Next
+                  </a>
+              </li>
+              <?php endif; ?>
+          </ul>
+      </nav>
+      <?php endif; ?>
 
     </div>
 

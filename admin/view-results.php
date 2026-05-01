@@ -14,7 +14,11 @@ if (!isset($_GET['student_id'])) {
 }
 $student_id = (int)$_GET['student_id'];
 
-
+// Pagination setup
+$limit = 10;
+$page = $_GET['page'] ?? 1;
+$page = max(1, (int)$page);
+$offset = ($page - 1) * $limit;
 
 $stmt1 = $conn->prepare("
     SELECT s.student_name, c.class_name 
@@ -30,15 +34,27 @@ if (!$student) {
     die("Student not found");
 }
 
-
+// Get total count
+$stmt_count = $conn->prepare("
+    SELECT COUNT(*) as total
+    FROM results r
+    JOIN sessions se ON r.session_id = se.session_id
+    WHERE r.student_id = ?
+");
+$stmt_count->bind_param("i", $student_id);
+$stmt_count->execute();
+$total = $stmt_count->get_result()->fetch_assoc()['total'];
+$total_pages = ceil($total / $limit);
+$stmt_count->close();
 
 $stmt2 = $conn->prepare("
     SELECT r.subject, r.marks, r.grade, r.exam_term, se.session_name
     FROM results r
     JOIN sessions se ON r.session_id = se.session_id
     WHERE r.student_id = ?
+    LIMIT ? OFFSET ?
 ");
-$stmt2->bind_param("i", $student_id);
+$stmt2->bind_param("iii", $student_id, $limit, $offset);
 $stmt2->execute();
 $result = $stmt2->get_result();
 ?>
@@ -105,6 +121,65 @@ $result = $stmt2->get_result();
         
         </table>
         <a href="./index.php" class="btn mt-3">Back to Dashboard</a>
+
+        <!-- Pagination -->
+        <?php if ($total_pages > 1): ?>
+        <nav aria-label="Results pagination" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <!-- Previous button -->
+                <?php if ($page > 1): ?>
+                <li class="page-item">
+                    <a class="page-link" href="?student_id=<?= $student_id ?>&page=<?= $page - 1 ?>">
+                        Previous
+                    </a>
+                </li>
+                <?php endif; ?>
+
+                <!-- Page numbers -->
+                <?php
+                $start_page = max(1, $page - 2);
+                $end_page = min($total_pages, $page + 2);
+                
+                if ($start_page > 1): ?>
+                <li class="page-item">
+                    <a class="page-link" href="?student_id=<?= $student_id ?>&page=1">1</a>
+                </li>
+                <?php if ($start_page > 2): ?>
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
+                <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                    <a class="page-link" href="?student_id=<?= $student_id ?>&page=<?= $i ?>">
+                        <?= $i ?>
+                    </a>
+                </li>
+                <?php endfor; ?>
+
+                <?php if ($end_page < $total_pages): ?>
+                <?php if ($end_page < $total_pages - 1): ?>
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                <?php endif; ?>
+                <li class="page-item">
+                    <a class="page-link" href="?student_id=<?= $student_id ?>&page=<?= $total_pages ?>">
+                        <?= $total_pages ?>
+                    </a>
+                </li>
+                <?php endif; ?>
+
+                <!-- Next button -->
+                <?php if ($page < $total_pages): ?>
+                <li class="page-item">
+                    <a class="page-link" href="?student_id=<?= $student_id ?>&page=<?= $page + 1 ?>">
+                        Next
+                    </a>
+                </li>
+                <?php endif; ?>
+            </ul>
+        </nav>
+        <?php endif; ?>
+
         </div>
     </main>
 

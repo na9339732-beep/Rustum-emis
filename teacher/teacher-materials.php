@@ -5,6 +5,10 @@ ini_set('display_errors', 1);
 
 include '../config/db.php';
 
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Teacher' || $_SESSION['job_status'] !== 'Active') {
+    header("Location: ../login.php");
+    exit;
+}
 // Fetch Study Materials with class + teacher name
 $sql = "
     SELECT sm.*, c.class_name, t.teacher_name
@@ -14,6 +18,31 @@ $sql = "
     ORDER BY sm.uploaded_at DESC
 ";
 $result = $conn->query($sql);
+
+// Pagination setup
+$limit = 10;
+$page = $_GET['page'] ?? 1;
+$page = max(1, (int)$page);
+$offset = ($page - 1) * $limit;
+
+// Get total count
+$total_query = "SELECT COUNT(*) as total FROM study_materials sm
+                JOIN classes c ON sm.class_id = c.class_id
+                JOIN teachers t ON sm.teacher_id = t.teacher_id";
+$total_result = $conn->query($total_query);
+$total = $total_result->fetch_assoc()['total'];
+$total_pages = ceil($total / $limit);
+
+// Fetch paginated results
+$sql_paginated = "
+    SELECT sm.*, c.class_name, t.teacher_name
+    FROM study_materials sm
+    JOIN classes c ON sm.class_id = c.class_id
+    JOIN teachers t ON sm.teacher_id = t.teacher_id
+    ORDER BY sm.uploaded_at DESC
+    LIMIT $limit OFFSET $offset
+";
+$result_paginated = $conn->query($sql_paginated);
 ?>
 <!doctype html>
 <html lang="en">
@@ -67,7 +96,7 @@ $result = $conn->query($sql);
             </thead>
             <tbody>
 
-            <?php while ($row = $result->fetch_assoc()): ?>
+            <?php while ($row = $result_paginated->fetch_assoc()): ?>
               <tr>
                 <td><?= htmlspecialchars($row['title']) ?></td>
                 <td><?= htmlspecialchars($row['class_name']) ?></td>
@@ -88,11 +117,72 @@ $result = $conn->query($sql);
               </tr>
             <?php endwhile; ?>
 
-            <?php if ($result->num_rows == 0): ?>
+            <?php if ($total == 0): ?>
               <tr>
                 <td colspan="6" style="text-align:center;color:gray">No study materials uploaded yet.</td>
               </tr>
             <?php endif; ?>
+
+            </tbody>
+          </table>
+
+          <!-- Pagination -->
+          <?php if ($total_pages > 1): ?>
+          <nav aria-label="Materials pagination" class="mt-4">
+              <ul class="pagination justify-content-center">
+                  <!-- Previous button -->
+                  <?php if ($page > 1): ?>
+                  <li class="page-item">
+                      <a class="page-link" href="?page=<?= $page - 1 ?>">
+                          Previous
+                      </a>
+                  </li>
+                  <?php endif; ?>
+
+                  <!-- Page numbers -->
+                  <?php
+                  $start_page = max(1, $page - 2);
+                  $end_page = min($total_pages, $page + 2);
+                  
+                  if ($start_page > 1): ?>
+                  <li class="page-item">
+                      <a class="page-link" href="?page=1">1</a>
+                  </li>
+                  <?php if ($start_page > 2): ?>
+                  <li class="page-item disabled"><span class="page-link">...</span></li>
+                  <?php endif; ?>
+                  <?php endif; ?>
+
+                  <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
+                  <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                      <a class="page-link" href="?page=<?= $i ?>">
+                          <?= $i ?>
+                      </a>
+                  </li>
+                  <?php endfor; ?>
+
+                  <?php if ($end_page < $total_pages): ?>
+                  <?php if ($end_page < $total_pages - 1): ?>
+                  <li class="page-item disabled"><span class="page-link">...</span></li>
+                  <?php endif; ?>
+                  <li class="page-item">
+                      <a class="page-link" href="?page=<?= $total_pages ?>">
+                          <?= $total_pages ?>
+                      </a>
+                  </li>
+                  <?php endif; ?>
+
+                  <!-- Next button -->
+                  <?php if ($page < $total_pages): ?>
+                  <li class="page-item">
+                      <a class="page-link" href="?page=<?= $page + 1 ?>">
+                          Next
+                      </a>
+                  </li>
+                  <?php endif; ?>
+              </ul>
+          </nav>
+          <?php endif; ?>
 
             </tbody>
           </table>

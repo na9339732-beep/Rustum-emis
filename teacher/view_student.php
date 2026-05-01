@@ -4,11 +4,10 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 include '../config/db.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Teacher') {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Teacher' || $_SESSION['job_status'] !== 'Active') {
     header("Location: ../login.php");
     exit;
 }
-
 $teacher_id = $_SESSION['user_id'];
 
 // Validate ID

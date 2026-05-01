@@ -1,21 +1,15 @@
 <?php
-// ptm_reschedule.php
-
-error_reporting(E_ALL);
-ini_set('display_errors', 1); // Remove this in production!
 
 session_start();
 header('Content-Type: application/json');
-
+require_once '../config/db.php';
 // Security: Must be logged in as Teacher
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Teacher') {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Teacher' || $_SESSION['job_status'] !== 'Active') {
     echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
     exit;
 }
 
-require_once '../config/db.php';
 
-$conn = mysqli_connect($servername, $username, $password, $dbname);
 if (!$conn) {
     echo json_encode(['success' => false, 'message' => 'Database connection failed']);
     exit;

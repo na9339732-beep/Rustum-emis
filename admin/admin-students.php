@@ -34,7 +34,49 @@ $search   = $_GET['search'] ?? '';
 $class_id = $_GET['class_id'] ?? '';
 $status   = $_GET['status'] ?? '';
 
-// Base Query
+// Pagination
+$limit = 10;
+$page = $_GET['page'] ?? 1;
+$page = max(1, (int)$page);
+$offset = ($page - 1) * $limit;
+
+// Base Query for total count
+$count_query = "SELECT COUNT(*) as total FROM students s JOIN classes c ON s.class_id = c.class_id WHERE 1=1";
+$count_params = [];
+$count_types  = "";
+
+// Apply filters to count query
+if (!empty($search)) {
+    $count_query .= " AND (s.student_name LIKE ? OR s.father_name LIKE ?)";
+    $searchTerm = "%$search%";
+    $count_params[] = $searchTerm;
+    $count_params[] = $searchTerm;
+    $count_types .= "ss";
+}
+
+if (!empty($class_id)) {
+    $count_query .= " AND s.class_id = ?";
+    $count_params[] = $class_id;
+    $count_types .= "i";
+}
+
+if (!empty($status)) {
+    $count_query .= " AND s.status = ?";
+    $count_params[] = $status;
+    $count_types .= "s";
+}
+
+// Get total count
+$count_stmt = $conn->prepare($count_query);
+if (!empty($count_params)) {
+    $count_stmt->bind_param($count_types, ...$count_params);
+}
+$count_stmt->execute();
+$total = $count_stmt->get_result()->fetch_assoc()['total'];
+$total_pages = ceil($total / $limit);
+$count_stmt->close();
+
+// Base Query for data
 $query = "SELECT s.student_id, s.student_name, s.father_name, s.status, c.class_name 
           FROM students s 
           JOIN classes c ON s.class_id = c.class_id 
@@ -64,13 +106,18 @@ if (!empty($status)) {
     $types .= "s";
 }
 
-$query .= " ORDER BY s.student_id ASC";
+$query .= " ORDER BY s.student_id ASC LIMIT ? OFFSET ?";
 
 // Prepare + Execute
 $stmt = $conn->prepare($query);
 
 if (!empty($params)) {
+    $types .= "ii";
+    $params[] = $limit;
+    $params[] = $offset;
     $stmt->bind_param($types, ...$params);
+} else {
+    $stmt->bind_param("ii", $limit, $offset);
 }
 
 $stmt->execute();
@@ -201,6 +248,65 @@ th, td { padding:10px; border:1px solid #ddd; }
         <?php endif; ?>
     </tbody>
 </table>
+
+<!-- Pagination -->
+<?php if ($total_pages > 1): ?>
+<nav aria-label="Student pagination" class="mt-4">
+    <ul class="pagination justify-content-center">
+        <!-- Previous button -->
+        <?php if ($page > 1): ?>
+        <li class="page-item">
+            <a class="page-link" href="?page=<?= $page - 1 ?>&search=<?= urlencode($search) ?>&class_id=<?= urlencode($class_id) ?>&status=<?= urlencode($status) ?>">
+                Previous
+            </a>
+        </li>
+        <?php endif; ?>
+
+        <!-- Page numbers -->
+        <?php
+        $start_page = max(1, $page - 2);
+        $end_page = min($total_pages, $page + 2);
+        
+        if ($start_page > 1): ?>
+        <li class="page-item">
+            <a class="page-link" href="?page=1&search=<?= urlencode($search) ?>&class_id=<?= urlencode($class_id) ?>&status=<?= urlencode($status) ?>">1</a>
+        </li>
+        <?php if ($start_page > 2): ?>
+        <li class="page-item disabled"><span class="page-link">...</span></li>
+        <?php endif; ?>
+        <?php endif; ?>
+
+        <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
+        <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+            <a class="page-link" href="?page=<?= $i ?>&search=<?= urlencode($search) ?>&class_id=<?= urlencode($class_id) ?>&status=<?= urlencode($status) ?>">
+                <?= $i ?>
+            </a>
+        </li>
+        <?php endfor; ?>
+
+        <?php if ($end_page < $total_pages): ?>
+        <?php if ($end_page < $total_pages - 1): ?>
+        <li class="page-item disabled"><span class="page-link">...</span></li>
+        <?php endif; ?>
+        <li class="page-item">
+            <a class="page-link" href="?page=<?= $total_pages ?>&search=<?= urlencode($search) ?>&class_id=<?= urlencode($class_id) ?>&status=<?= urlencode($status) ?>">
+                <?= $total_pages ?>
+            </a>
+        </li>
+        <?php endif; ?>
+
+        <!-- Next button -->
+        <?php if ($page < $total_pages): ?>
+        <li class="page-item">
+            <a class="page-link" href="?page=<?= $page + 1 ?>&search=<?= urlencode($search) ?>&class_id=<?= urlencode($class_id) ?>&status=<?= urlencode($status) ?>">
+                Next
+            </a>
+        </li>
+        <?php endif; ?>
+    </ul>
+</nav>
+<?php endif; ?>
+
 </main>
 </div>
 </body>

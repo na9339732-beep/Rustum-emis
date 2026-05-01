@@ -80,7 +80,7 @@ if ($token) {
 //verify.php
                 if ($update->affected_rows > 0) {
                     // $resetLink = "http://foldername/forget_password.php?token=$token";
-                    $resetLink = "http://finalEmis/forget_password.php?token=$token";
+                    $resetLink = "http://localhost/finalemis/forget_password.php?token=$token";
                     $messageContent = "Click this link to reset your password (valid for 1 hour): <a href='$resetLink'>$resetLink</a>";
                     sendEmail($email, "Reset Your Password", $messageContent);
 

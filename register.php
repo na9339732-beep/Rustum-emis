@@ -32,6 +32,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $errorMsg = "Invalid role selected.";
         } elseif (!$fullname || !$email || !$password) {
             $errorMsg = "All fields are required.";
+        } elseif (!preg_match("/^[a-zA-Z ]+$/", $fullname)) {
+            $errorMsg = "Only alphabets allowed in name.";
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errorMsg = "Invalid email address.";
         } elseif (strlen($password) < 8) {
@@ -63,17 +65,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     if ($c->num_rows == 0) {
                         $errorMsg = "No student found with this CNIC.";
                     } else {
-
+                        if($role === 'Parents'){
                         $ins = $conn->prepare("
                             INSERT INTO users (username,email,password,role,cnic,status,email_verified,verification_token)
                             VALUES (?,?,?,?,?,'inactive',0,?)
-                        ");
+                        ");}
+                        else {
+                            $ins = $conn->prepare("
+                            INSERT INTO users (username,email,password,role,status,email_verified,verification_token)
+                            VALUES (?,?,?,?,?,'active',0,?)");
+                        }
                         $ins->bind_param("ssssss", $fullname, $email, $hash, $role, $parent_cnic, $token);
 
                         if ($ins->execute()) {
 
                             // Send verification email
-                            $verifyLink = "http://finalEmis/verify.php?token=$token";
+                            $verifyLink = "http://localhost/finalemis/verify.php?token=$token";
                             $message = "Click the link to verify your email: $verifyLink";
                             sendEmail($email, "Verify Your Email", $message);
 
@@ -105,11 +112,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         $successMsg = "Account created! Complete student profile.";
 
                         // Send verification email
-                        $verifyLink = "http://finalEmis/verify.php?token=$token";
+                        $verifyLink = "http://localhost/finalemis/verify.php?token=$token";
                         $message = "Click the link to verify your email: $verifyLink";
                         sendEmail($email, "Verify Your Email", $message);
-
-                    } else {
+                    $conn->query("update users set status='active' where user_id=" . $conn->insert_id);
+                    }  else {
                         $errorMsg = "Registration failed.";
                     }
                     $ins->close();
@@ -141,9 +148,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $city         = trim($_POST['city'] ?? '');
             $student_cnic = trim($_POST['student_cnic'] ?? '');
             $father_cnic  = trim($_POST['father_cnic'] ?? '');
+            $group_id      = $_POST['group_id'];
 
             if (!$father_name || !$phone || !$gender || !$dob || !$class_id) {
                 $errorMsg = "Please fill all required fields.";
+            } elseif (!preg_match("/^[a-zA-Z ]+$/", $father_name)) {
+                 $errorMsg = "Only alphabets allowed in name.";
+             } elseif (!preg_match("/^[0-9]{11}$/", $phone)) {
+                $errorMsg = "Phone must be 11 digits.";
+            } elseif (!preg_match("/^[0-9]{13}$/", $student_cnic)) {
+                $errorMsg = "Student CNIC must be 13 digits.";
+            } elseif (!preg_match("/^[0-9]{13}$/", $father_cnic)) {
+                $errorMsg = "Father CNIC must be 13 digits.";
             } else {
 
                 $s = $conn->query("SELECT session_id FROM sessions WHERE status='active' LIMIT 1");
@@ -152,14 +168,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $stmt = $conn->prepare("
                     INSERT INTO students
                     (student_name,father_name,email,phone,address,gender,dob,class_id,city,
-                     student_cnic,father_cnic,status,user_id,session_id)
-                    VALUES (?,?,?,?,?,?,?,?,?,?,?,'registered',?,?)
+                     student_cnic,father_cnic,status,user_id,session_id,group_id)
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,'registered',?,?,?)
                 ");
 
                 $stmt->bind_param(
-                    "sssssssiissii",
+                    "sssssssiissiii",
                     $name,$father_name,$email,$phone,$address,$gender,$dob,
-                    $class_id,$city,$student_cnic,$father_cnic,$user_id,$session_id
+                    $class_id,$city,$student_cnic,$father_cnic,$user_id,$session_id,$group_id
                 );
 
                 if ($stmt->execute()) {
@@ -178,7 +194,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $stmt->close();
             }
         }
-    }
+   }
 }
 ?>
 
@@ -195,11 +211,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <div class="auth-container">
         <div class="auth-card">
         <div class="text-center mt-5"><h2>Create Account</h2></div>
-            <div class="form-body">
-
+        
             <?php if($successMsg): ?><div class="alert-success"><?= $successMsg ?></div><?php endif; ?>
             <?php if($errorMsg): ?><div class="alert-error"><?= $errorMsg ?></div><?php endif; ?>
-
+                
+            <div class="form-body">
             <?php if($step==1): ?>
             <form method="post">
                 <input type="hidden" name="step1">
@@ -236,7 +252,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <?php endif; ?>
 
                 <?php if($step==2): ?>
-                <form method="post">
+                <form method="post" class="mt-4">  
                 
                     <input type="hidden" name="step2">
                  </div>
@@ -292,7 +308,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <div class="input-group">
                     <label>Address</label>
                     <input class="rounded" type="text" name="address">
+                    
                 </div>
+                <div class="mb-3 text-start">
+                    <label>Group</label>
+                    <select name="group_id">
+                        <option value="">Select Group</option>
+                        <?php
+                        $q = $conn->query("SELECT group_id,group_name FROM student_groups WHERE status='Active'");
+                        while($c=$q->fetch_assoc()):
+                        ?>
+                        <option value="<?= $c['group_id'] ?>"><?= htmlspecialchars($c['group_name']) ?></option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
+
                     <button style="width:100%" class="btn-primary">Complete Registration</button>
             </form>
             <?php endif; ?>

@@ -25,16 +25,19 @@ if (!$user_cnic) {
 $stmt = $conn->prepare("
     SELECT * 
     FROM teachers 
-    WHERE cnic = ? 
+    WHERE cnic = ? and job_status = 'Active'
     LIMIT 1
 ");
 $stmt->bind_param("s", $user_cnic);
 $stmt->execute();
 $teacher = $stmt->get_result()->fetch_assoc();
 $stmt->close();
+$_SESSION['job_status'] = $teacher['job_status'];
 
-if (!$teacher) {
-    die("Teacher record not found for CNIC: " . htmlspecialchars($user_cnic));
+
+if (!$teacher || $_SESSION['job_status'] !== 'Active') {
+    //die("Teacher record not found for CNIC: " . htmlspecialchars($user_cnic));
+    header("Location: ../login.php");
 }
 
 $teacher_id = (int)$teacher['teacher_id'];

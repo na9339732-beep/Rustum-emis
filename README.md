@@ -98,7 +98,8 @@ A comprehensive, open-source web-based platform for managing all aspects of educ
    
    - Place the project in your web root (e.g., `htdocs` for XAMPP)
    - Ensure `mod_rewrite` is enabled for proper routing
-   - Access the application at `http://localhost/finalEmis`
+   - Access the application at `http://localhost/finalemis
+`
 
 ### Initial Setup
 

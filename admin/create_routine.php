@@ -16,7 +16,7 @@ $classes = mysqli_query($conn, "SELECT class_id, class_name FROM classes WHERE c
 //fetch students
 $subject = mysqli_query($conn, "SELECT * FROM `subjects` ORDER BY `subjects`.`subject_name` ASC");
 // Fetch teachers
-$teachers = mysqli_query($conn, "SELECT teacher_id, teacher_name, subject FROM teachers ORDER BY teacher_name ASC");
+$teachers = mysqli_query($conn, "SELECT teacher_id, teacher_name, subject FROM teachers where job_status='Active' ORDER BY teacher_name ASC");
 
 // Fetch sessions
 $sessions = mysqli_query($conn, "SELECT session_id, session_name FROM sessions WHERE status='active' ORDER BY starting_date DESC");

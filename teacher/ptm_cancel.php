@@ -4,7 +4,7 @@ include '../config/db.php';
 
 header('Content-Type: application/json');
 
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Teacher') {
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Teacher' || $_SESSION['job_status'] !== 'Active') {
     echo json_encode(['success'=>false,'message'=>'Unauthorized']);
     exit;
 }

@@ -67,6 +67,39 @@ $ptmBookings = $conn->query("
     ORDER BY pb.meeting_date DESC
 ")->fetch_all(MYSQLI_ASSOC);
 
+// Pagination setup
+$limit = 10;
+$page = $_GET['page'] ?? 1;
+$page = max(1, (int)$page);
+$offset = ($page - 1) * $limit;
+
+// Get total count
+$total_query = "SELECT COUNT(*) as total FROM ptm_bookings pb
+                LEFT JOIN students s ON pb.child_id = s.student_id
+                LEFT JOIN teachers t ON pb.teacher_id = t.teacher_id
+                LEFT JOIN users u ON pb.booked_by = u.user_id";
+$total_result = $conn->query($total_query);
+$total = $total_result->fetch_assoc()['total'];
+$total_pages = ceil($total / $limit);
+
+// Fetch paginated results
+$ptmBookings_paginated = $conn->query("
+    SELECT 
+        pb.booking_id,
+        pb.meeting_date,
+        pb.status,
+        s.student_name,
+        t.teacher_name,
+        u.username AS parent_name,
+        pb.created_at
+    FROM ptm_bookings pb
+    LEFT JOIN students s ON pb.child_id = s.student_id
+    LEFT JOIN teachers t ON pb.teacher_id = t.teacher_id
+    LEFT JOIN users u ON pb.booked_by = u.user_id
+    ORDER BY pb.meeting_date DESC
+    LIMIT $limit OFFSET $offset
+")->fetch_all(MYSQLI_ASSOC);
+
 /* ======================
    HANDLE STATUS UPDATE (Optional via GET)
 ====================== */
@@ -124,7 +157,7 @@ if (isset($_GET['action'], $_GET['id'])) {
 <th>Booked At</th>
 </tr>
 
-<?php if($ptmBookings): foreach($ptmBookings as $ptm): ?>
+<?php if($ptmBookings_paginated): foreach($ptmBookings_paginated as $ptm): ?>
 <tr>
 <td><?= htmlspecialchars($ptm['student_name'] ?? 'Unknown') ?></td>
 <td><?= htmlspecialchars($ptm['teacher_name'] ?? 'Unknown') ?></td>
@@ -136,6 +169,66 @@ if (isset($_GET['action'], $_GET['id'])) {
 </tr>
 <?php endforeach; else: ?>
 <tr><td colspan="7">No PTM bookings found.</td></tr>
+<?php endif; ?>
+
+</table>
+
+<!-- Pagination -->
+<?php if ($total_pages > 1): ?>
+<nav aria-label="PTM pagination" class="mt-4">
+    <ul class="pagination justify-content-center">
+        <!-- Previous button -->
+        <?php if ($page > 1): ?>
+        <li class="page-item">
+            <a class="page-link" href="?page=<?= $page - 1 ?>">
+                Previous
+            </a>
+        </li>
+        <?php endif; ?>
+
+        <!-- Page numbers -->
+        <?php
+        $start_page = max(1, $page - 2);
+        $end_page = min($total_pages, $page + 2);
+        
+        if ($start_page > 1): ?>
+        <li class="page-item">
+            <a class="page-link" href="?page=1">1</a>
+        </li>
+        <?php if ($start_page > 2): ?>
+        <li class="page-item disabled"><span class="page-link">...</span></li>
+        <?php endif; ?>
+        <?php endif; ?>
+
+        <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
+        <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+            <a class="page-link" href="?page=<?= $i ?>">
+                <?= $i ?>
+            </a>
+        </li>
+        <?php endfor; ?>
+
+        <?php if ($end_page < $total_pages): ?>
+        <?php if ($end_page < $total_pages - 1): ?>
+        <li class="page-item disabled"><span class="page-link">...</span></li>
+        <?php endif; ?>
+        <li class="page-item">
+            <a class="page-link" href="?page=<?= $total_pages ?>">
+                <?= $total_pages ?>
+            </a>
+        </li>
+        <?php endif; ?>
+
+        <!-- Next button -->
+        <?php if ($page < $total_pages): ?>
+        <li class="page-item">
+            <a class="page-link" href="?page=<?= $page + 1 ?>">
+                Next
+            </a>
+        </li>
+        <?php endif; ?>
+    </ul>
+</nav>
 <?php endif; ?>
 
 </table>

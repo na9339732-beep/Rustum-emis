@@ -42,17 +42,39 @@ if($student["status"]=="suspended"){
 }
 $student_id = $student['student_id'];
 
+// Pagination setup
+$limit = 10;
+$page = $_GET['page'] ?? 1;
+$page = max(1, (int)$page);
+$offset = ($page - 1) * $limit;
+
+// Get total count
+$stmtCount = $conn->prepare("
+    SELECT COUNT(*) as total
+    FROM results 
+    WHERE student_id = ?
+");
+if (!$stmtCount) {
+    die("Prepare failed: " . $conn->error);
+}
+$stmtCount->bind_param("i", $student_id);
+$stmtCount->execute();
+$total = $stmtCount->get_result()->fetch_assoc()['total'];
+$total_pages = ceil($total / $limit);
+$stmtCount->close();
+
 // Fetch student results dynamically
 $stmtResults = $conn->prepare("
     SELECT subject, marks, grade, exam_term
     FROM results 
     WHERE student_id = ? 
     ORDER BY id DESC
+    LIMIT ? OFFSET ?
 ");
 if (!$stmtResults) {
     die("Prepare failed: " . $conn->error);
 }
-$stmtResults->bind_param("i", $student_id);
+$stmtResults->bind_param("iii", $student_id, $limit, $offset);
 $stmtResults->execute();
 $results = $stmtResults->get_result();
 ?>
@@ -136,6 +158,64 @@ $results = $stmtResults->get_result();
             <?php endif; ?>
           </tbody>
         </table>
+
+        <!-- Pagination -->
+        <?php if ($total_pages > 1): ?>
+        <nav aria-label="Results pagination" class="mt-4">
+          <ul class="pagination justify-content-center">
+              <!-- Previous button -->
+              <?php if ($page > 1): ?>
+              <li class="page-item">
+                  <a class="page-link" href="?page=<?= $page - 1 ?>">
+                      Previous
+                  </a>
+              </li>
+              <?php endif; ?>
+
+              <!-- Page numbers -->
+              <?php
+              $start_page = max(1, $page - 2);
+              $end_page = min($total_pages, $page + 2);
+              
+              if ($start_page > 1): ?>
+              <li class="page-item">
+                  <a class="page-link" href="?page=1">1</a>
+              </li>
+              <?php if ($start_page > 2): ?>
+              <li class="page-item disabled"><span class="page-link">...</span></li>
+              <?php endif; ?>
+              <?php endif; ?>
+
+              <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
+              <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                  <a class="page-link" href="?page=<?= $i ?>">
+                      <?= $i ?>
+                  </a>
+              </li>
+              <?php endfor; ?>
+
+              <?php if ($end_page < $total_pages): ?>
+              <?php if ($end_page < $total_pages - 1): ?>
+              <li class="page-item disabled"><span class="page-link">...</span></li>
+              <?php endif; ?>
+              <li class="page-item">
+                  <a class="page-link" href="?page=<?= $total_pages ?>">
+                      <?= $total_pages ?>
+                  </a>
+              </li>
+              <?php endif; ?>
+
+              <!-- Next button -->
+              <?php if ($page < $total_pages): ?>
+              <li class="page-item">
+                  <a class="page-link" href="?page=<?= $page + 1 ?>">
+                      Next
+                  </a>
+              </li>
+              <?php endif; ?>
+          </ul>
+        </nav>
+        <?php endif; ?>
 
         <div style="margin-top:12px">
           <a class="btn" href="download_report.php?student_id=<?= urlencode($student_id); ?>">Download Report Card</a>

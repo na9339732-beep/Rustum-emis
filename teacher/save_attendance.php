@@ -5,8 +5,8 @@ session_start();
 include '../config/db.php';
 
 // Ensure teacher is logged in
-if(!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Teacher'){
-    header("Location: login.php");
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Teacher' || $_SESSION['job_status'] !== 'Active') {
+    header("Location: ../login.php");
     exit;
 }
 

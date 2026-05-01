@@ -16,16 +16,16 @@ function sendEmail($to, $subject, $body) {
         $mail->isSMTP();
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = '63kazmi.edu@gmail.com'; // Your Gmail
-        $mail->Password   = 'ioovbmnrialccmki';    // Your App Password (16 chars)
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // TLS encryption
+        $mail->Username   = 'ra7527753@gmail.com'; 
+        $mail->Password   = 'mtoixnibmxocgevr';    
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
 
         // Sender
-        $mail->setFrom('63kazmi.edu@gmail.com', 'EMIS System');
+        $mail->setFrom('ra7527753@gmail.com', 'EMIS System');
 
         // Recipient
-        $mail->addAddress($to); // <-- Fixed syntax (removed extra quote)
+        $mail->addAddress($to);
 
         // Email content
         $mail->isHTML(true);

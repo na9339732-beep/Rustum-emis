@@ -4,10 +4,7 @@ ini_set('display_errors', 1);
 session_start();
 include '../config/db.php';
 
-/* ======================
-   AUTH
-====================== */
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Teacher' || $_SESSION['job_status'] !== 'Active') {
     header("Location: ../login.php");
     exit;
 }
@@ -48,7 +45,7 @@ $sessions = $conn->query("
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $student_id = $_POST['student_id'];
-    $subject    = $_POST['subject']
+    $subject    = $_POST['subject'];
     $grade      = $_POST['grade'];
     $exam_term  = $_POST['exam_term'];
     $session_id = $_POST['session_id'];
@@ -56,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $marks = $_POST['marks'] ?? '';
 
         // Check format: 1 to 3 digits / 1 to 3 digits
-        if (!preg_match('/^\d{1,3}\s*\/\s*\d{1,3}$/', $marks)) {
+        if (!preg_match('/^\d{1,3}\/\d{1,3}$/', $marks)) {
             echo "Invalid format! Use format like 45/50 or 100/100 (max 3 digits)";
             exit;
         }
@@ -201,7 +198,7 @@ $results = $conn->query("
         <?php endforeach; ?>
         </select>
 
-        <input type="number" name="marks" class="form-control"
+        <input type="text" name="marks" class="form-control"
         value="<?= $edit['marks'] ?? '' ?>" placeholder="Obtained Marks/ Total Marks" required>
 
         <input type="text" name="grade" class="form-control"

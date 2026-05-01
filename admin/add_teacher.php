@@ -5,7 +5,7 @@ session_start();
 include '../config/db.php';
 
 // Restrict to Admin only
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin') {
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin' ) {
     header("Location: ../login.php");
     exit;
 }
@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             );
             $stmt1->execute();
 
-            $username = $email ?: $cnic;
+            $username = $teacher_name;
             $password = password_hash($cnic, PASSWORD_DEFAULT);
 
             $stmt2 = $conn->prepare("
