@@ -50,40 +50,66 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $exam_term  = $_POST['exam_term'];
     $session_id = $_POST['session_id'];
     $edit_id    = $_POST['edit_id'] ?? null;
-    $marks = $_POST['marks'] ?? '';
+    $marks      = $_POST['marks'] ?? '';
 
-        // Check format: 1 to 3 digits / 1 to 3 digits
-        if (!preg_match('/^\d{1,3}\/\d{1,3}$/', $marks)) {
-            echo "Invalid format! Use format like 45/50 or 100/100 (max 3 digits)";
-            exit;
-        }
+    // ================= VALIDATION =================
+    if (!preg_match('/^\d{1,3}\/\d{1,3}$/', $marks)) {
+        echo "<script>alert('Invalid format! Use 45/50 or 100/100');history.back();</script>";
+        exit;
+    }
 
-        // Split values
-        list($obtained, $total) = explode('/', $marks);
+    list($obtained, $total) = explode('/', $marks);
+    $obtained = (int) trim($obtained);
+    $total    = (int) trim($total);
 
-        $obtained = (int) trim($obtained);
-        $total = (int) trim($total);
+    if ($total == 0) {
+        echo "<script>alert('Total marks cannot be zero!');history.back();</script>";
+        exit;
+    }
 
-        // Logical validation
-        if ($total == 0) {
-            echo "Total marks cannot be zero!";
-            exit;
-        }
+    if ($obtained > $total) {
+        echo "<script>alert('Obtained marks cannot be greater than total!');history.back();</script>";
+        exit;
+    }
 
-        if ($obtained > $total) {
-            echo "Obtained marks cannot be greater than total marks!";
-            exit;
-        }
+    // ================= DUPLICATE CHECK =================
+    $checkQuery = "
+        SELECT id FROM results 
+        WHERE student_id=? 
+        AND subject=? 
+        AND exam_term=? 
+        AND session_id=?
+    ";
 
+    if ($edit_id) {
+        $checkQuery .= " AND id != ?";
+        $checkStmt = $conn->prepare($checkQuery);
+        $checkStmt->bind_param("isssi",
+            $student_id, $subject, $exam_term, $session_id, $edit_id
+        );
+    } else {
+        $checkStmt = $conn->prepare($checkQuery);
+        $checkStmt->bind_param("isss",
+            $student_id, $subject, $exam_term, $session_id
+        );
+    }
 
+    $checkStmt->execute();
+    $resultCheck = $checkStmt->get_result();
 
+    if ($resultCheck->num_rows > 0) {
+        echo "<script>alert('Result already exists for this student, subject, term, and session!');history.back();</script>";
+        exit;
+    }
+
+    // ================= INSERT / UPDATE =================
     if ($edit_id) {
         $stmt = $conn->prepare("
             UPDATE results
             SET student_id=?, subject=?, marks=?, grade=?, exam_term=?, session_id=?
             WHERE id=?
         ");
-        $stmt->bind_param("isissii",
+        $stmt->bind_param("issssii",
             $student_id, $subject, $marks, $grade, $exam_term, $session_id, $edit_id
         );
     } else {
@@ -92,14 +118,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             (student_id, subject, marks, grade, exam_term, session_id)
             VALUES (?, ?, ?, ?, ?, ?)
         ");
-        $stmt->bind_param("isissi",
+        $stmt->bind_param("issssi",
             $student_id, $subject, $marks, $grade, $exam_term, $session_id
         );
     }
 
-    $stmt->execute();
-    header("Location: manage_results.php");
-    exit;
+    if ($stmt->execute()) {
+        header("Location: manage_results.php");
+        exit;
+    } else {
+        echo "Error: " . $stmt->error;
+    }
 }
 
 /* ======================
