@@ -10,6 +10,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin') {
     exit;
 }
 
+
 /* --------------------
    CSRF TOKEN
 ---------------------*/
@@ -27,14 +28,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
     && ($_POST['action'] ?? '') === 'create'
     && $_POST['csrf'] === $csrf
 ) {
-    $stmt = $conn->prepare(
-        "INSERT INTO classes (class_name, class_short, session_id) VALUES (?,?,?)"
-    );
-    $stmt->bind_param("ssi", $_POST['class_name'], $_POST['class_short'], $_POST['session_id']);
-    $stmt->execute();
-    $stmt->close();
+   $class_name  = trim($_POST['class_name']);
+    $class_short = trim($_POST['class_short']);
+    
+    $session_id  = (int)$_POST['session_id'];
 
-    $msg = "<div class='alert alert-success'>Class created successfully.</div>";
+    //  CLASS NAME VALIDATION
+    // 2-3 alphabets + 1-2 numbers (order flexible: e.g. BS1, 1BS, BS12)
+    if (!preg_match('/^(?=(?:.*[A-Za-z]){2,3}$)(?=(?:.*\d){1,2}$)[A-Za-z\d]+$/', $class_name)) {
+        $msg = "<div class='alert alert-danger'>
+        Class Name must contain 2-3 letters and 1-2 numbers only (e.g. BS1, CS12, 2IT).
+        </div>";
+    }
+
+    //  CLASS SHORT VALIDATION
+    // Only alphabets (Roman), no spaces, no numbers
+    elseif (!preg_match('/^[A-Za-z]+$/', $class_short)) {
+        $msg = "<div class='alert alert-danger'>
+        Class Short must contain only letters (no numbers or spaces).
+        </div>";
+    }
+    // 🔍 Check duplicate
+    $check = $conn->prepare("SELECT class_id FROM classes WHERE class_name=? AND session_id=? AND class_status != 'deleted'");
+    $check->bind_param("si", $class_name, $session_id);
+    $check->execute();
+    $check->store_result();
+
+    if ($check->num_rows > 0) {
+        $msg = "<div class='alert alert-danger'>This class already exists in this session.</div>";
+        $conn->query("DELETE FROM classes WHERE session_id IS NULL;
+        ");
+        
+    } else {
+        $stmt = $conn->prepare(
+            "INSERT INTO classes (class_name, class_short, session_id) VALUES (?,?,?)"
+        );
+        $stmt->bind_param("ssi", $class_name, $class_short, $session_id);
+        $stmt->execute();
+        $stmt->close();
+        $conn->query("DELETE FROM classes WHERE session_id IS NULL;
+        "); // Cleanup any orphaned classes without session
+        $msg = "<div class='alert alert-success'>Class created successfully.</div>";
+    }
+
+    $check->close();
 }
 
 /* --------------------
@@ -44,36 +81,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
     && ($_POST['action'] ?? '') === 'update'
     && $_POST['csrf'] === $csrf
 ) {
-    $stmt = $conn->prepare(
-        "UPDATE classes 
-         SET class_name=?, class_short=?, session_id=?, class_status=? 
-         WHERE class_id=?"
-    );
+    $class_id    = (int)$_POST['class_id'];
+    $class_name  = trim($_POST['class_name']);
+    $class_short = trim($_POST['class_short']);
+    $session_id  = (int)$_POST['session_id'];
+    $status      = $_POST['class_status'];
 
-    $stmt->bind_param(
-        "ssisi",
-        $_POST['class_name'],
-        $_POST['class_short'],
-        $_POST['session_id'],
-        $_POST['class_status'],
-        $_POST['class_id']
-    );
+    // 🔍 Check duplicate (exclude current id)
+    $check = $conn->prepare("SELECT class_id FROM classes 
+        WHERE class_name=? AND session_id=? AND class_id != ? AND class_status != 'deleted'");
+    
+    $check->bind_param("sii", $class_name, $session_id, $class_id);
+    $check->execute();
+    $check->store_result();
 
-    $stmt->execute();
-    $stmt->close();
+    if ($check->num_rows > 0) {
+        $msg = "<div class='alert alert-danger'>This class already exists in this session.</div>";
 
-    $msg = "<div class='alert alert-success'>Class updated successfully.</div>";
+    } else {
+        $stmt = $conn->prepare(
+            "UPDATE classes 
+             SET class_name=?, class_short=?, session_id=?, class_status=? 
+             WHERE class_id=?"
+        );
+
+        $stmt->bind_param(
+            "ssisi",
+            $class_name,
+            $class_short,
+            $session_id,
+            $status,
+            $class_id
+        );
+
+        $stmt->execute();
+        $stmt->close();
+
+        $msg = "<div class='alert alert-success'>Class updated successfully.</div>";
+    }
+
+    $check->close();
 }
-
 /* --------------------
    DELETE CLASS (SOFT)
 ---------------------*/
 if (isset($_GET['delete'], $_GET['csrf']) && $_GET['csrf'] === $csrf) {
     $id = (int)$_GET['delete'];
     $conn->query("UPDATE classes SET class_status='deleted' WHERE class_id=$id");
-    $msg = "<div class='alert alert-success'>Class deleted.</div>";
+    $msg = "<div class='alert alert-info'>Class deleted.</div>";
 }
-
+if (!empty($msg)) {
+    $_SESSION['msg'] = $msg;
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
+}
 /* --------------------
    FETCH DATA
 ---------------------*/
@@ -141,7 +202,13 @@ $classes_paginated = $conn->query("
                     </button>
                 </div>
 
-                <?= $msg ?>
+               <?php 
+                if (!empty($_SESSION['msg'])) {
+                    echo $_SESSION['msg'];
+                    unset($_SESSION['msg']);
+                }
+                ?>
+
 
                 <div class="card shadow-sm">
                     <div class="card-body table-responsive">

@@ -9,8 +9,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
     header("Location: ../login.php");
     exit;
 }
-
-// ======================
+//======================
 // UPDATE STATUS
 // ======================
 if (isset($_POST['update_status']) && isset($_POST['status'])) {
@@ -31,7 +30,7 @@ if (isset($_POST['update_status']) && isset($_POST['status'])) {
 
     $stmt->close();
 
-    header("Location: manage_parents.php?msg=success");
+    header("Location: admin-parents.php?msg=success");
     exit;
 }
 

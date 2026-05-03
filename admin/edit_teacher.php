@@ -25,6 +25,8 @@ if($result->num_rows == 0){
     die("Teacher not found.");
 }
 
+
+
 $teacher = $result->fetch_assoc();
 $stmt->close();
 
@@ -32,7 +34,10 @@ $stmt->close();
 $deptQuery = $conn->query("SELECT id, department_name FROM departments ORDER BY department_name ASC");
 
 
+$error = "";
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
     $teacher_id = $_POST['teacher_id'];
     $teacher_name = $_POST['teacher_name'];
     $cnic = $_POST['cnic'];
@@ -43,15 +48,53 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $joining = $_POST['joining'];
     $job_status = $_POST['job_status'];
 
-    // Update teacher data
-    $stmtUpdate = $conn->prepare("UPDATE teachers SET teacher_name=?, cnic=?, highest_qualification=?, department_id=?, subject=?, job_nature=?, joining=?, job_status=? WHERE teacher_id=?");
-    $stmtUpdate->bind_param("sssissssi", $teacher_name, $cnic, $highest_qualification, $department_id, $subject, $job_nature, $joining, $job_status, $teacher_id);
-    
-    if($stmtUpdate->execute()){
-        header("Location: index.php?message=Teacher updated successfully");
-        exit;
-    } else {
-        die("Error updating teacher: " . $stmtUpdate->error);
+    // VALIDATIONS
+    if (empty($teacher_name) || empty($cnic) || empty($highest_qualification) || empty($department_id) || empty($job_nature) || empty($joining) || empty($job_status)) {
+        $error = "Please fill in all required fields.";
+    }
+    elseif (!is_numeric($department_id)) {
+        $error = "Invalid department selected.";
+    }
+    elseif (!in_array($job_nature, ['Permanent', 'Contract', 'Visiting'])) {
+        $error = "Invalid job nature selected.";
+    }
+    elseif (!preg_match('/^[0-9]{13}$/', $cnic)) {
+        $error = "Invalid CNIC format. Expected: 1234512345671";
+    }
+    elseif (!preg_match("/^[a-zA-Z\s\.\-]{2,50}$/", $teacher_name)) {
+        $error = "Invalid teacher name.";
+    }
+    elseif (!preg_match("/^[a-zA-Z\s\.\-]{2,100}$/", $highest_qualification)) {
+        $error = "Invalid qualification.";
+    }
+    elseif (!preg_match("/^[a-zA-Z\s\.\-]{2,50}$/", $subject)) {
+        $error = "Invalid subject.";
+    }
+
+    // CHECK CNIC UNIQUE
+    if (empty($error)) {
+        $stmtCheck = $conn->prepare("SELECT teacher_id FROM teachers WHERE cnic = ? AND teacher_id != ?");
+        $stmtCheck->bind_param("si", $cnic, $teacher_id);
+        $stmtCheck->execute();
+        $resultCheck = $stmtCheck->get_result();
+
+        if ($resultCheck->num_rows > 0) {
+            $error = "CNIC already exists for another teacher.";
+        }
+        $stmtCheck->close();
+    }
+
+    // UPDATE
+    if (empty($error)) {
+        $stmtUpdate = $conn->prepare("UPDATE teachers SET teacher_name=?, cnic=?, highest_qualification=?, department_id=?, subject=?, job_nature=?, joining=?, job_status=? WHERE teacher_id=?");
+        $stmtUpdate->bind_param("sssissssi", $teacher_name, $cnic, $highest_qualification, $department_id, $subject, $job_nature, $joining, $job_status, $teacher_id);
+
+        if ($stmtUpdate->execute()) {
+            header("Location: index.php?message=Teacher updated successfully");
+            exit;
+        } else {
+            $error = "Error updating teacher.";
+        }
     }
 }
 ?>
@@ -72,7 +115,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <main class="main">
         <h3>Edit Teacher</h3>
         <hr>
-
+        <?php if(!empty($error)): ?>
+            <div class="alert alert-danger"><?= $error ?></div>
+        <?php endif; ?>
         <form method="POST">
 
             <input type="hidden" name="teacher_id" value="<?= $teacher['teacher_id'] ?>">

@@ -59,24 +59,50 @@ if (isset($_GET['delete'], $_GET['csrf']) && $_GET['csrf'] === $csrf) {
 ---------------------*/
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['csrf'] ?? '') === $csrf) {
 
-    $stmt = $conn->prepare("
-        UPDATE sessions 
-        SET session_name = ?, starting_date = ?, remarks = ? 
-        WHERE session_id = ?
-    ");
+    $session_name  = $_POST['session_name'];
+    $starting_date = $_POST['starting_date'];
+    $remarks       = $_POST['remarks'];
+    $session_id    = (int) $_POST['session_id'];
 
-    $stmt->bind_param(
-        "sssi",
-        $_POST['session_name'],
-        $_POST['starting_date'],
-        $_POST['remarks'],
-        $_POST['session_id']
-    );
+    if (!empty($session_name) && !empty($starting_date)) {
 
-    $stmt->execute();
-    $stmt->close();
+        //  Check duplicate (exclude current record)
+        $checkStmt = $conn->prepare("
+            SELECT session_id 
+            FROM sessions 
+            WHERE session_name = ? AND starting_date = ? AND session_id != ?
+        ");
+        $checkStmt->bind_param("ssi", $session_name, $starting_date, $session_id);
+        $checkStmt->execute();
+        $checkStmt->store_result();
 
-    $msg = "<div class='alert alert-success'>Batch updated successfully.</div>";
+        if ($checkStmt->num_rows > 0) {
+
+            $msg = "<div class='alert alert-danger'>Error: This session already exists.</div>";
+
+        } else {
+
+            //  Update
+            $stmt = $conn->prepare("
+                UPDATE sessions 
+                SET session_name = ?, starting_date = ?, remarks = ? 
+                WHERE session_id = ?
+            ");
+
+            $stmt->bind_param("sssi", $session_name, $starting_date, $remarks, $session_id);
+
+            if ($stmt->execute()) {
+                $msg = "<div class='alert alert-success'>Batch updated successfully.</div>";
+            } else {
+                $msg = "<div class='alert alert-danger'>Update failed.</div>";
+            }
+
+            $stmt->close();
+        }
+
+    } else {
+        $msg = "<div class='alert alert-warning'>Please fill required fields.</div>";
+    }
 }
 
 /* --------------------
@@ -87,6 +113,8 @@ $sessions = $conn->query("
     FROM sessions 
     ORDER BY starting_date DESC
 ");
+
+
 
 // Pagination setup
 $limit = 10;
@@ -138,7 +166,17 @@ $sessions_paginated = $conn->query("
             </a>
         </div>
 
-        <?= $msg ?>
+       <?= $msg ?>
+
+        <?php if (!empty($msg)): ?>
+        <script>
+            setTimeout(function() {
+                window.location.href = window.location.href;
+            }, 2000); // 2 sec delay
+        </script>
+        <?php endif; ?>
+
+
 
         <div class="card shadow-sm">
             <div class="card-body table-responsive">

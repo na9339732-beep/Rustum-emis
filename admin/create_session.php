@@ -4,22 +4,53 @@ include '../config/db.php';
 $msg = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = $_POST['session_name'];
+
+    $name = trim($_POST['session_name']);
     $starting_date = $_POST['starting_date'];
     $remarks = $_POST['remarks'];
 
-    if (!empty($name) && !empty($starting_date)) {
-        $stmt = $conn->prepare("
-            INSERT INTO sessions (session_name, starting_date, remarks) 
-            VALUES (?, ?, ?)
-        ");
-        $stmt->bind_param("sss", $name, $starting_date, $remarks);
+   // 🎯 Only allow format: 2024-2025
+if (!preg_match('/^\d{4}-\d{4}$/', $name)) {
+    $msg = "<div class='alert alert-danger'>Batch Name must be in format: yyyy-yyyy</div>";
+}
+    // 📅 Validate date
+    elseif (!empty($starting_date)) {
+        $dateParts = explode('-', $starting_date);
 
-        if ($stmt->execute()) {
-            $msg = "<div class='alert alert-success'>Session Created Successfully!</div>";
-        } else {
-            $msg = "<div class='alert alert-danger'>Error: Unable to create session.</div>";
+        if (count($dateParts) !== 3 || !checkdate($dateParts[1], $dateParts[2], $dateParts[0])) {
+            $msg = "<div class='alert alert-danger'>Invalid date format.</div>";
         }
+
+        // Optional:  prevent past date
+    
+
+        else {
+
+            // 🔍 Check duplicate
+            $checkStmt = $conn->prepare("SELECT session_id FROM sessions WHERE session_name = ? OR starting_date = ?");
+            $checkStmt->bind_param("ss", $name, $starting_date);
+            $checkStmt->execute();
+            $checkStmt->store_result();
+
+            if ($checkStmt->num_rows > 0) {
+                $msg = "<div class='alert alert-danger'>Error: This session already exists.</div>";
+            } else {
+
+                //  Insert
+                $stmt = $conn->prepare("
+                    INSERT INTO sessions (session_name, starting_date, remarks) 
+                    VALUES (?, ?, ?)
+                ");
+                $stmt->bind_param("sss", $name, $starting_date, $remarks);
+
+                if ($stmt->execute()) {
+                    $msg = "<div class='alert alert-success'>Session Created Successfully!</div>";
+                } else {
+                    $msg = "<div class='alert alert-danger'>Error: Unable to create session.</div>";
+                }
+            }
+        }
+
     } else {
         $msg = "<div class='alert alert-warning'>Please fill required fields.</div>";
     }

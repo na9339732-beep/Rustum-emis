@@ -14,7 +14,10 @@ if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin'){
 $classes = mysqli_query($conn, "SELECT class_id, class_name FROM classes WHERE class_status='active' ORDER BY class_name ASC");
 
 //fetch students
-$subject = mysqli_query($conn, "SELECT * FROM `subjects` ORDER BY `subjects`.`subject_name` ASC");
+$subject = mysqli_query($conn, "SELECT DISTINCT `subject_name` 
+FROM `subjects` 
+ORDER BY `subject_name` ASC;
+");
 // Fetch teachers
 $teachers = mysqli_query($conn, "SELECT teacher_id, teacher_name, subject FROM teachers where job_status='Active' ORDER BY teacher_name ASC");
 

@@ -76,7 +76,7 @@ unset($_SESSION['errors'], $_SESSION['success']);
             <label class="form-label">Status</label>
             <select name="status" class="form-select">
                 <option value="active" selected>Active</option>
-                <option value="inactive">Inactive</option>
+                
             </select>
         </div>
 

@@ -8,7 +8,7 @@ $current_page = basename($_SERVER['PHP_SELF']); // to highlight active page
 <!-- Desktop Sidebar -->
 <div class="sidebar d-none d-lg-block position-sticky top-0 col-lg-3" id="sidebar" style="height:120vh;">
     <div class="brand mb-5 p-4 text-center">
-        <div class="logo mb-2"><img src="../assets/images/logo.png" width="60" alt="Logo"></div>
+        <div class="logo mb-2 "><img src="../assets/images/logo.png" width="60" alt="Logo"/></div>
         <div class="fw-bold fs-4 text-primary">EMIS</div>
     </div>
 

@@ -9,64 +9,115 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Admin') {
     header("Location: ../login.php");
     exit;
 }
+$error = "";
 
 // Get student ID
 $student_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 if ($student_id <= 0) {
-    die("Invalid student ID.");
+    $error = "Invalid student ID.";
 }
 
-// Fetch student info
-$stmt = $conn->prepare("SELECT * FROM students WHERE student_id = ?");
-$stmt->bind_param("i", $student_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$student = $result->fetch_assoc();
-$stmt->close();
-
-if (!$student) {
-    die("Student not found.");
-}
-
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $student_name = $_POST['student_name'] ?? '';
-    $father_name  = $_POST['father_name'] ?? '';
-    $email        = $_POST['email'] ?? '';
-    $phone        = $_POST['phone'] ?? '';
-    $class_id     = (int)($_POST['class_id'] ?? 0);
-    $group_id     = $_POST['group_id'] ? (int)$_POST['group_id'] : null;
-    $status       = $_POST['status'] ?? 'registered';
-    $city         = $_POST['city'] ?? '';
-    $state        = $_POST['state'] ?? '';
-
-    // Validate status
-    $allowed_status = ['registered', 'admitted', 'banned', 'suspended'];
-    if (!in_array($status, $allowed_status)) {
-        die("Invalid status selected.");
-    }
-
-    $stmt = $conn->prepare("
-        UPDATE students SET 
-            student_name = ?, 
-            father_name = ?, 
-            email = ?, 
-            phone = ?, 
-            class_id = ?, 
-            group_id = ?,
-            status = ?, 
-            city = ?, 
-            state = ?
-        WHERE student_id = ?
-    ");
-    $stmt->bind_param("ssssiisssi", $student_name, $father_name, $email, $phone, $class_id, $group_id, $status, $city, $state, $student_id);
+// Fetch student
+if (empty($error)) {
+    $stmt = $conn->prepare("SELECT * FROM students WHERE student_id = ?");
+    $stmt->bind_param("i", $student_id);
     $stmt->execute();
+    $result = $stmt->get_result();
+    $student = $result->fetch_assoc();
     $stmt->close();
 
-    header("Location: admin-students.php");
-    exit;
+    if (!$student) {
+        $error = "Student not found.";
+    }
 }
 
+// Handle form
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $student_name = trim($_POST['student_name'] ?? '');
+    $father_name  = trim($_POST['father_name'] ?? '');
+    $email        = trim($_POST['email'] ?? '');
+    $phone        = trim($_POST['phone'] ?? '');
+    $class_id     = (int)($_POST['class_id'] ?? 0);
+    $group_id     = !empty($_POST['group_id']) ? (int)$_POST['group_id'] : null;
+    $status       = $_POST['status'] ?? 'registered';
+
+   
+    $city  = $student['city'];
+    $state = $student['state'];
+
+    // VALIDATIONS
+    if (empty($student_name) || empty($father_name) || empty($email) || empty($phone) || $class_id <= 0) {
+        $error = "Please fill in all required fields.";
+    }
+    elseif (!preg_match("/^[a-zA-Z\s\.\-]{2,50}$/", $student_name)) {
+        $error = "Invalid student name.";
+    }
+    elseif (!preg_match("/^[a-zA-Z\s\.\-]{2,50}$/", $father_name)) {
+        $error = "Invalid father name.";
+    }
+    elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "Invalid email format.";
+    }
+    elseif (!preg_match("/^03[0-9]{9}$/", $phone)) {
+        $error = "Invalid phone number.";
+    }
+
+    $allowed_status = ['registered', 'admitted', 'banned', 'suspended'];
+    if (empty($error) && !in_array($status, $allowed_status)) {
+        $error = "Invalid status selected.";
+    }
+
+    // CHECK EMAIL UNIQUE
+    if (empty($error)) {
+        $stmtCheck = $conn->prepare("SELECT student_id FROM students WHERE email = ? AND student_id != ?");
+        $stmtCheck->bind_param("si", $email, $student_id);
+        $stmtCheck->execute();
+        $resultCheck = $stmtCheck->get_result();
+
+        if ($resultCheck->num_rows > 0) {
+            $error = "Email already exists for another student.";
+        }
+        $stmtCheck->close();
+    }
+
+    // UPDATE
+    if (empty($error)) {
+        $stmt = $conn->prepare("
+            UPDATE students SET 
+                student_name = ?, 
+                father_name = ?, 
+                email = ?, 
+                phone = ?, 
+                class_id = ?, 
+                group_id = ?, 
+                status = ?, 
+                city = ?, 
+                state = ?
+            WHERE student_id = ?
+        ");
+
+        $stmt->bind_param("ssssiisssi", 
+            $student_name, 
+            $father_name, 
+            $email, 
+            $phone, 
+            $class_id, 
+            $group_id, 
+            $status, 
+            $city, 
+            $state, 
+            $student_id
+        );
+
+        if ($stmt->execute()) {
+            header("Location: admin-students.php?message=Student updated successfully");
+            exit;
+        } else {
+            $error = "Update failed.";
+        }
+    }
+}
 // Fetch classes for dropdown
 $classes = $conn->query("SELECT class_id, class_name FROM classes ORDER BY class_name ASC")->fetch_all(MYSQLI_ASSOC);
 
@@ -91,6 +142,9 @@ $groups = $conn->query("SELECT group_id, group_name FROM student_groups ORDER BY
     <?php include '../partials/sidebar.php'; ?>
     <main class="main">
         <h2>Edit Student</h2>
+        <?php if(!empty($error)): ?>
+            <div class="alert alert-danger"><?= $error ?></div>
+        <?php endif; ?>
         <form method="POST">
             <div>
                 <label>Student Name</label>
@@ -98,15 +152,15 @@ $groups = $conn->query("SELECT group_id, group_name FROM student_groups ORDER BY
             </div>
             <div>
                 <label>Father Name</label>
-                <input type="text" class="form-control"  name="father_name" value="<?= htmlspecialchars($student['father_name']) ?>">
+                <input type="text" class="form-control"  name="father_name" value="<?= htmlspecialchars($student['father_name']) ?>" required>
             </div>
             <div>
                 <label>Email</label>
-                <input type="email" class="form-control" name="email" value="<?= htmlspecialchars($student['email']) ?>">
+                <input type="email" class="form-control" name="email" value="<?= htmlspecialchars($student['email']) ?>" required>
             </div>
             <div>
                 <label>Phone</label>
-                <input type="text" class="form-control" name="phone" value="<?= htmlspecialchars($student['phone']) ?>">
+                <input type="text" class="form-control" name="phone" value="<?= htmlspecialchars($student['phone']) ?>" required>
             </div>
             <div>
                 <label>Class</label>
@@ -131,7 +185,7 @@ $groups = $conn->query("SELECT group_id, group_name FROM student_groups ORDER BY
             </div>
             <div>
                 <label>Status</label>
-                <select class="form-control"  name="status">
+                <select class="form-control"  name="status" required>
                     <option value="registered" <?= $student['status']=='registered'?'selected':'' ?>>Registered</option>
                     <option value="admitted" <?= $student['status']=='admitted'?'selected':'' ?>>Admitted</option>
                     <option value="banned" <?= $student['status']=='banned'?'selected':'' ?>>Banned</option>
@@ -140,11 +194,11 @@ $groups = $conn->query("SELECT group_id, group_name FROM student_groups ORDER BY
             </div>
             <div>
                 <label>City</label>
-                <input type="text" class="form-control" name="city" value="<?= htmlspecialchars($student['city']) ?>">
+                <input type="text" class="form-control" name="city" value="<?= htmlspecialchars($student['city']) ?>" disabled>
             </div>
             <div>
                 <label>State</label>
-                <input type="text" class="form-control" name="state" value="<?php if(!empty($student['state'])) { echo $student['state']; } ?>">
+                <input type="text" class="form-control" name="state" value="<?php if(!empty($student['state'])) { echo $student['state']; } ?>" disabled>
             </div>
             <div style="margin-top:10px;">
                 <button type="submit" class="btn">Update Student</button>
@@ -155,4 +209,3 @@ $groups = $conn->query("SELECT group_id, group_name FROM student_groups ORDER BY
 </div>
 </body>
 </html>
-

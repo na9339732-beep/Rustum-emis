@@ -39,10 +39,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $joining               = $_POST['joining'];
     $job_status            = $_POST['job_status'];
 
-    if (!empty($_POST['email']) && !$email) {
+    if (!empty($_POST['email']) && !$email && FILTER_VALIDATE_EMAIL) {
         $error = "Please enter a valid email address.";
     }
-
+    if (!preg_match('/^[0-9]{13}$/', $cnic)) {
+        $error = "CNIC must be exactly 13 digits.";
+    }
+if (!preg_match("/^[a-zA-Z\s\.\-]{2,100}$/", $teacher_name)) {
+        $error = "Teacher name can only contain letters, spaces, dots, and hyphens (2-100 characters).";
+    }
+    if (!preg_match("/^[a-zA-Z\s\.\-]{2,100}$/", $designation)) {
+        $error = "Designation can only contain letters, spaces, dots, and hyphens (2-100 characters).";
+    }
+    if (!preg_match("/^[a-zA-Z\s\.\-]{2,100}$/", $highest_qualification)) {
+        $error = "Highest qualification can only contain letters, spaces, dots, and hyphens (2-100 characters).";
+    }
+    if ($bps < 1 || $bps > 22) {
+        $error = "BPS must be between 1 and 22.";
+    }
+    if ($department_id <= 0) {
+        $error = "Please select a valid department.";
+    }
+     if ($job_status !="Active"){
+        $error = "Please select a valid job status.";
+     } 
     // === CHECK DUPLICATES ===
     if (!$error) {
         $checkTeacher = $conn->prepare("SELECT teacher_id FROM teachers WHERE cnic = ? OR email = ?");

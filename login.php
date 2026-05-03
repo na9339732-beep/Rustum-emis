@@ -12,66 +12,76 @@ $showResendButton = false; // flag to show resend button
 $userEmailToResend = '';    // store email for resend
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	if (!isset($_POST['resend_email'])) {
-    $email = strtolower(trim($_POST['email']));
-    $password = $_POST['password'];
+    if (!isset($_POST['resend_email'])) {
+        $email = strtolower(trim($_POST['email']));
+        $password = $_POST['password'];
 
-    // Use prepared statement to prevent SQL injection
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email=? LIMIT 1");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    if ($result->num_rows == 1) {
-        $user = $result->fetch_assoc();
+        // Use prepared statement to prevent SQL injection
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email=? LIMIT 1");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        // Check if email is verified
-        if ($user['email_verified'] != 1) {
-            $loginError = "Please verify your email before logging in.";
-            $showResendButton = true;
-            $userEmailToResend = $user['email'];  
-        }
+        if ($result->num_rows == 1) {
+            $user = $result->fetch_assoc();
 
-        // Verify password
-        else if (password_verify($password, $user['password'])) {
-            if ($user['status'] != "active") {
-                $loginError = "Your account is not active.";
-            }  
-            // store user in session
-            $_SESSION['user_id'] = $user['user_id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['role'] = $user['role'];
-            $_SESSION['cnic'] = $user['cnic'];
+            // Check if email is verified
+            if ($user['email_verified'] != 1) {
+                $loginError = "Please verify your email before logging in.";
+                $showResendButton = true;
+                $userEmailToResend = $user['email'];
+            } 
+            // Verify password
+            else if (password_verify($password, $user['password'])) {
 
-            // Redirect based on role
-            switch ($user['role']) {
-                case 'Admin':
-                    header("Location: admin/index.php");
-                    break;
-                case 'Teacher':
-                    header("Location: teacher/index.php");
-                    break;
-                case 'Student':
-                    header("Location: student/index.php");
-                    break;
-                case 'Parents':
-                    header("Location: parent/index.php");
-                    break;
-                default:
-                    header("Location: index.php");
+                // store user in session
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['cnic'] = $user['cnic'];
+
+                // Redirect based on role
+                switch ($user['role']) {
+                    case 'Admin':
+                        header("Location: admin/index.php");
+                        break;
+                    case 'Teacher':
+                        header("Location: teacher/index.php");
+                        break;
+                    case 'Student':
+                        header("Location: student/index.php");
+                        break;
+                    case 'Parents':
+                    // check if parent status is active or not
+                        if ($user['status'] != 'active') {
+                            session_destroy();
+                            echo "<script>
+                                    alert('Your account is not active. Please contact the administrator.');
+                                    window.location.href = 'login.php';
+                                </script>";
+                                break;
+                        } else {
+                            echo "<script>
+                                    window.location.href = 'parent/index.php';
+                                </script>";
+                                break;
+                        }
+                    exit;
+                    default:
+                        header("Location: index.php");
+                }
+                exit;
+
+            } else {
+                $loginError = "Incorrect password!";
             }
-            exit;
 
         } else {
-            $loginError = "Incorrect password!";
+            $loginError = "User not found!";
         }
 
-    } else {
-        $loginError = "User not found!";
+        $stmt->close();
     }
-
-    $stmt->close();
-}
 }
 // Handle Resend Verification Email button click
 if (isset($_POST['resend_email'])) {
@@ -85,12 +95,12 @@ if (isset($_POST['resend_email'])) {
     $stmt->execute();
     $stmt->close();
 
-    $verificationLink = "http://localhost/finalemis/verify.php?token=$token";
+    $verificationLink = "http://localhost/finalemis/verify_email.php?token=$token";
     $messageContent = "Please verify your email by clicking this link: <a href='$verificationLink'>$verificationLink</a>";
     sendEmail($emailToResend, "Verify Your Email", $messageContent);
 
     $loginError = "Verification email has been resent. Please check your inbox.";
-    $showResendButton = false;
+    $showResendButton = false; // hide button after sending
 }
 ?>
 
